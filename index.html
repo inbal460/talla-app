@@ -38,69 +38,6 @@
             position: relative;
         }
 
-        /* סרגל מורה מוגן בסיסמה */
-        .teacher-zone {
-            background: #f0fdf4;
-            border: 2px solid #4ade80;
-            border-radius: 16px;
-            padding: 12px 20px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .teacher-title {
-            font-weight: 800;
-            color: #166534;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 15px;
-        }
-
-        .teacher-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-grow: 1;
-            justify-content: flex-end;
-        }
-
-        .teacher-input {
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid #86efac;
-            font-family: inherit;
-            font-size: 14px;
-            width: 140px;
-        }
-
-        .teacher-select {
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid #86efac;
-            font-family: inherit;
-            font-size: 14px;
-            min-width: 220px;
-            display: none;
-        }
-
-        .teacher-btn {
-            background: #16a34a;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 13px;
-        }
-
-        .teacher-btn:hover { background: #15803d; }
-
         /* כותרת מרוכזת */
         .top-banner {
             text-align: center;
@@ -322,7 +259,7 @@
         @media print {
             body { background: white !important; padding: 0 !important; margin: 0 !important; }
             .container { box-shadow: none !important; border: none !important; padding: 0 !important; width: 100% !important; }
-            .actions, .speech-btn, #statusMsg, .teacher-zone { display: none !important; }
+            .actions, .speech-btn, #statusMsg { display: none !important; }
             .top-banner { margin-bottom: 18px !important; padding-bottom: 15px !important; }
             .main-title { font-size: 28px !important; }
             .flight-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 15px !important; }
@@ -338,22 +275,6 @@
 
 <div class="container">
     
-    <!-- סרגל מורה מוגן בסיסמה -->
-    <div class="teacher-zone">
-        <div class="teacher-title">
-            <i class="fa-solid fa-lock"></i> אזור מורה (מוגן בסיסמה)
-        </div>
-        <div class="teacher-controls" id="teacherAuthBox">
-            <input type="password" id="teacherPassword" class="teacher-input" placeholder="סיסמת מורה">
-            <button type="button" class="teacher-btn" onclick="verifyTeacherAndFetch()">
-                <i class="fa-solid fa-key"></i> כניסה
-            </button>
-        </div>
-        <select id="studentSelect" class="teacher-select" onchange="loadSelectedStudent()">
-            <option value="">-- טוען רשימת תלמידים... --</option>
-        </select>
-    </div>
-
     <div class="top-banner">
         <div class="main-title">
             <i class="fa-solid fa-plane-departure" style="color: #0284c7;"></i>
@@ -474,13 +395,11 @@
 </div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyPsVFHyRzHgLtlnTy7WbN31m8P2mgbA3_-Z3WjkQs34_ShKuhJOMZQzwB8U9yPFBj8g/exec";
-    const TEACHER_PASSWORD = "Shaf1357";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPU82tW5cezzZytt22bHwDgJ63OW6OwyjtvCo04H1SIwd1LaMg9ykC2-jZ1r7jDWGm0Q/exec";
 
     document.getElementById('date').valueAsDate = new Date();
 
     const fields = ['fullName', 'grade', 'date', 'dreams', 'strengths', 'challenges', 'academicGoals', 'socialGoals', 'personalGoals', 'howToAchieve'];
-    let loadedStudentsData = [];
     
     fields.forEach(id => {
         const el = document.getElementById(id);
@@ -491,78 +410,6 @@
             localStorage.setItem('tala_' + id, el.value);
         });
     });
-
-    // פונקציית הקולבק לקבלת הנתונים מהשרת
-    window.onStudentsLoaded = function(data) {
-        const status = document.getElementById('statusMsg');
-        if (data && data.status === "success" && data.students) {
-            loadedStudentsData = data.students;
-            const select = document.getElementById('studentSelect');
-            select.innerHTML = '<option value="">-- בחר תלמיד/ה מהרשימה --</option>';
-            
-            loadedStudentsData.forEach((st, idx) => {
-                const opt = document.createElement('option');
-                opt.value = idx;
-                opt.innerText = st.fullName + (st.grade ? " (כיתה " + st.grade + ")" : "");
-                select.appendChild(opt);
-            });
-
-            status.style.color = '#10b981';
-            status.innerText = '✅ נטענו ' + loadedStudentsData.length + ' תלמידים מ-Google Sheets!';
-        } else {
-            status.style.color = '#ef4444';
-            status.innerText = 'שגיאה בטעינת הנתונים מ-Google Sheets.';
-        }
-    };
-
-    // אימות סיסמה וחשיפת תיבת הבחירה
-    function verifyTeacherAndFetch() {
-        const pass = document.getElementById('teacherPassword').value;
-        if (pass !== TEACHER_PASSWORD) {
-            alert('סיסמה שגויה! הגישה מורשית למורים בלבד.');
-            return;
-        }
-
-        // חשוף את תיבת הבחירה מיד בלחיצה
-        document.getElementById('teacherAuthBox').style.display = 'none';
-        const select = document.getElementById('studentSelect');
-        select.style.display = 'inline-block';
-
-        const status = document.getElementById('statusMsg');
-        status.style.color = '#0284c7';
-        status.innerText = '🔄 מוריד רשימת תלמידים מ-Google Sheets...';
-
-        // קריאה דינמית ל-Google Apps Script
-        const oldScript = document.getElementById('jsonpScript');
-        if (oldScript) oldScript.remove();
-
-        const script = document.createElement('script');
-        script.id = 'jsonpScript';
-        script.src = GOOGLE_SCRIPT_URL + '?action=getStudents&callback=onStudentsLoaded';
-        script.onerror = function() {
-            status.style.color = '#ef4444';
-            status.innerText = 'שגיאה בתקשורת מול הגיליון. אנא ודא שה-Apps Script פרוס כראוי.';
-        };
-        document.body.appendChild(script);
-    }
-
-    function loadSelectedStudent() {
-        const select = document.getElementById('studentSelect');
-        const idx = select.value;
-        if (idx === "") return;
-
-        const st = loadedStudentsData[idx];
-        fields.forEach(id => {
-            if (st[id] !== undefined) {
-                const el = document.getElementById(id);
-                if (id === 'date' && st[id] && st[id].includes('T')) {
-                    el.value = st[id].split('T')[0];
-                } else {
-                    el.value = st[id];
-                }
-            }
-        });
-    }
 
     let currentRecognition = null;
     let currentBtn = null;
@@ -632,7 +479,7 @@
     function sendToGoogleSheets() {
         const status = document.getElementById('statusMsg');
         status.style.color = '#0284c7';
-        status.innerText = '✈️ שולח נתונים לגיליון... אנא המתן';
+        status.innerText = '✈️️ שולח נתונים לגיליון... אנא המתן';
 
         const payload = {
             fullName: document.getElementById('fullName').value,
