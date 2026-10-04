@@ -41,20 +41,47 @@
         /* כותרת מרוכזת */
         .top-banner {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             border-bottom: 3px dashed #93c5fd;
             padding-bottom: 20px;
         }
 
         .main-title {
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 800;
             color: var(--primary-blue);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+        }
+
+        /* כפתור הרשאת מיקרופון חד-פעמי */
+        .mic-permission-banner {
+            background: #fef9c3;
+            border: 2px solid #fde047;
+            border-radius: 12px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #854d0e;
+        }
+
+        .mic-perm-btn {
+            background: #eab308;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 13px;
         }
 
         /* תיבת פרטים אישיים */
@@ -144,7 +171,6 @@
             gap: 8px;
         }
 
-        /* אייקונים מוגדלים */
         .visual-icon {
             font-size: 22px;
             display: inline-block;
@@ -184,9 +210,20 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            transition: all 0.2s;
         }
 
-        .speech-btn:hover { background: #bae6fd; }
+        .speech-btn.recording {
+            background: #ef4444 !important;
+            color: white !important;
+            animation: pulse 1.2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
 
         /* חתימות בתחתית */
         .signatures {
@@ -236,117 +273,46 @@
         }
 
         .btn-submit { background: #10b981; color: white; }
-        .btn-submit:hover { background: #059669; transform: translateY(-2px); }
+        .btn-submit:hover { background: #059669; }
 
         .btn-pdf { background: #0284c7; color: white; }
-        .btn-pdf:hover { background: #0369a1; transform: translateY(-2px); }
+        .btn-pdf:hover { background: #0369a1; }
 
         #statusMsg { text-align: center; margin-top: 15px; font-weight: bold; }
 
-        /* ==========================================
-           הגדרות הדפסה ל-A4
-           ========================================== */
-        @page {
-            size: A4 portrait;
-            margin: 10mm;
-        }
+        /* הגדרות הדפסה ל-A4 */
+        @page { size: A4 portrait; margin: 10mm; }
 
         @media print {
-            body {
-                background: white !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            .container {
-                box-shadow: none !important;
-                border: none !important;
-                padding: 0 !important;
-                max-width: 100% !important;
-                width: 100% !important;
-            }
-
-            .actions, .speech-btn, #statusMsg {
-                display: none !important;
-            }
-
-            .top-banner {
-                margin-bottom: 18px !important;
-                padding-bottom: 15px !important;
-            }
-
-            .main-title {
-                font-size: 28px !important;
-                margin-bottom: 12px !important;
-            }
-
-            .personal-details-box {
-                padding: 12px 20px !important;
-            }
-
-            .flight-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-                gap: 15px !important;
-                margin-top: 20px !important;
-            }
-
-            .flight-column {
-                padding: 15px !important;
-                border-width: 2px !important;
-                border-radius: 16px !important;
-                gap: 14px !important;
-            }
-
-            .col-header {
-                font-size: 18px !important;
-                padding-bottom: 8px !important;
-            }
-
-            label {
-                font-size: 13px !important;
-            }
-
-            textarea {
-                min-height: 95px !important;
-                font-size: 13px !important;
-                padding: 8px !important;
-                border-width: 1px !important;
-            }
-
-            #howToAchieve {
-                min-height: 280px !important;
-            }
-
-            .signatures {
-                margin-top: 25px !important;
-                padding-top: 18px !important;
-                gap: 15px !important;
-            }
-
-            .sig-box {
-                padding: 12px !important;
-                font-size: 13px !important;
-            }
-
-            .sig-line {
-                margin-top: 45px !important;
-            }
+            body { background: white !important; padding: 0 !important; margin: 0 !important; }
+            .container { box-shadow: none !important; border: none !important; padding: 0 !important; width: 100% !important; }
+            .actions, .speech-btn, #statusMsg, .mic-permission-banner { display: none !important; }
+            .top-banner { margin-bottom: 18px !important; padding-bottom: 15px !important; }
+            .main-title { font-size: 28px !important; }
+            .flight-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 15px !important; }
+            .flight-column { padding: 15px !important; }
+            textarea { min-height: 95px !important; font-size: 13px !important; }
+            #howToAchieve { min-height: 280px !important; }
+            .signatures { margin-top: 25px !important; padding-top: 18px !important; }
+            .sig-line { margin-top: 45px !important; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- כותרת ממורכזת + פרטים -->
     <div class="top-banner">
         <div class="main-title">
             <i class="fa-solid fa-plane-departure" style="color: #0284c7;"></i>
             תכנית לימודים אישית
         </div>
+
+        <!-- באנר הרשאה חד פעמי למכשירים ניידים -->
+        <div class="mic-permission-banner" id="micBanner">
+            <span>🎤 כדי להקליט בדיבור, לחץ כאן לאישור המיקרופון פעם אחת:</span>
+            <button type="button" class="mic-perm-btn" onclick="requestMicPermission()">אשר מיקרופון</button>
+        </div>
         
-        <!-- פרטים אישיים -->
         <div class="personal-details-box">
             <div class="details-grid">
                 <div>
@@ -365,37 +331,34 @@
         </div>
     </div>
 
-    <!-- 3 העמודות -->
     <form id="talaForm">
         <div class="flight-grid">
             
-            <!-- עמודה 1: המסע שלי (שביל מסומן) -->
             <div class="flight-column">
                 <div class="col-header">
-                    <span class="visual-icon">🛣️</span>
+                    <span class="visual-icon">🛣️️</span>
                     המסע שלי
                 </div>
 
                 <div class="form-group">
                     <label><span class="visual-icon">💭</span> החלומות שלי:</label>
                     <textarea id="dreams" placeholder="מה היית רוצה להגשים?"></textarea>
-                    <button type="button" class="speech-btn" onclick="startSpeech('dreams')"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
+                    <button type="button" class="speech-btn" onclick="startSpeech('dreams', this)"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
                 </div>
 
                 <div class="form-group">
                     <label><span class="visual-icon">💪</span> החוזקות שלי:</label>
                     <textarea id="strengths" placeholder="במה אני טוב/ה?"></textarea>
-                    <button type="button" class="speech-btn" onclick="startSpeech('strengths')"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
+                    <button type="button" class="speech-btn" onclick="startSpeech('strengths', this)"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
                 </div>
 
                 <div class="form-group">
                     <label><span class="visual-icon">🚧</span> המעכבים שלי:</label>
                     <textarea id="challenges" placeholder="מה מאתגר אותי?"></textarea>
-                    <button type="button" class="speech-btn" onclick="startSpeech('challenges')"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
+                    <button type="button" class="speech-btn" onclick="startSpeech('challenges', this)"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
                 </div>
             </div>
 
-            <!-- עמודה 2: המטרות שלי (לוח מטרה) -->
             <div class="flight-column" style="border-color: #0284c7;">
                 <div class="col-header">
                     <span class="visual-icon">🎯</span>
@@ -405,23 +368,22 @@
                 <div class="form-group">
                     <label><span class="visual-icon">📚</span> תחום לימודי:</label>
                     <textarea id="academicGoals" placeholder="מטרה לימודית..."></textarea>
-                    <button type="button" class="speech-btn" onclick="startSpeech('academicGoals')"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
+                    <button type="button" class="speech-btn" onclick="startSpeech('academicGoals', this)"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
                 </div>
 
                 <div class="form-group">
                     <label><span class="visual-icon">🤝</span> תחום חברתי:</label>
                     <textarea id="socialGoals" placeholder="מטרה חברתית..."></textarea>
-                    <button type="button" class="speech-btn" onclick="startSpeech('socialGoals')"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
+                    <button type="button" class="speech-btn" onclick="startSpeech('socialGoals', this)"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
                 </div>
 
                 <div class="form-group">
                     <label><span class="visual-icon">❤️</span> מטרות אישיות:</label>
                     <textarea id="personalGoals" placeholder="מטרה אישית..."></textarea>
-                    <button type="button" class="speech-btn" onclick="startSpeech('personalGoals')"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
+                    <button type="button" class="speech-btn" onclick="startSpeech('personalGoals', this)"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
                 </div>
             </div>
 
-            <!-- עמודה 3: דרך הפעולה (מפת מסע) -->
             <div class="flight-column">
                 <div class="col-header">
                     <span class="visual-icon">🗺️</span>
@@ -431,13 +393,12 @@
                 <div class="form-group" style="flex:1;">
                     <label><span class="visual-icon">🚀</span> איך אשיג את המטרות שלי?</label>
                     <textarea id="howToAchieve" placeholder="צעדים מעשיים והעזרה שאצטרך..."></textarea>
-                    <button type="button" class="speech-btn" onclick="startSpeech('howToAchieve')"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
+                    <button type="button" class="speech-btn" onclick="startSpeech('howToAchieve', this)"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
                 </div>
             </div>
 
         </div>
 
-        <!-- חתימות -->
         <div class="signatures">
             <div class="sig-box">
                 <strong>חתימת התלמיד/ה</strong>
@@ -453,7 +414,6 @@
             </div>
         </div>
 
-        <!-- כפתורי פעולה -->
         <div class="actions">
             <button type="button" class="btn btn-submit" onclick="sendToGoogleSheets()">
                 <i class="fa-solid fa-paper-plane"></i> שמור ושגר לגיליון המרכזי
@@ -483,34 +443,66 @@
         });
     });
 
-    function startSpeech(fieldId) {
-        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-            alert('הדפדפן שלך אינו תומך בהקלטה קולית. מומלץ להשתמש בדפדפן Chrome.');
+    // הרשאה חד-פעמית למיקרופון
+    function requestMicPermission() {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    document.getElementById('micBanner').style.display = 'none';
+                    // סגירת הזרם מיד לאחר קבלת האישור
+                    stream.getTracks().forEach(track => track.stop());
+                    alert('אישור המיקרופון התקבל בהצלחה! כעת ניתן להקליט בכל הסעיפים.');
+                })
+                .catch(err => {
+                    alert('אנא אשר גישה למיקרופון בהגדרות הדפדפן כדי להשתמש בהקלטה קולית.');
+                });
+        }
+    }
+
+    let activeRecognition = null;
+
+    function startSpeech(fieldId, btn) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert('הדפדפן במכשיר זה אינו תומך בזיהוי קולי. מומלץ לפתוח ב-Chrome או Safari.');
             return;
         }
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (activeRecognition) {
+            try { activeRecognition.stop(); } catch(e){}
+        }
+
         const recognition = new SpeechRecognition();
         recognition.lang = 'he-IL';
-        
-        const btn = event.currentTarget;
-        btn.style.background = '#fef08a';
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> מקליט...';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        btn.classList.add('recording');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> מקליט... דבר/י עכשיו';
 
         recognition.onresult = function(event) {
             const transcript = event.results[0][0].transcript;
             const field = document.getElementById(fieldId);
             field.value += (field.value ? ' ' : '') + transcript;
             field.dispatchEvent(new Event('input'));
-            btn.style.background = '#e0f2fe';
-            btn.innerHTML = '<i class="fa-solid fa-microphone"></i> הקלט תשובה';
         };
 
-        recognition.onerror = function() {
-            btn.style.background = '#e0f2fe';
-            btn.innerHTML = '<i class="fa-solid fa-microphone"></i> הקלט תשובה';
+        recognition.onerror = function(event) {
+            console.error("Speech error:", event.error);
+            resetBtn(btn);
         };
 
+        recognition.onend = function() {
+            resetBtn(btn);
+        };
+
+        activeRecognition = recognition;
         recognition.start();
+    }
+
+    function resetBtn(btn) {
+        btn.classList.remove('recording');
+        btn.innerHTML = '<i class="fa-solid fa-microphone"></i> הקלט תשובה';
     }
 
     function sendToGoogleSheets() {
