@@ -251,6 +251,9 @@
         .btn-pdf { background: #0284c7; color: white; }
         .btn-pdf:hover { background: #0369a1; }
 
+        .btn-reset { background: #f59e0b; color: white; }
+        .btn-reset:hover { background: #d97706; }
+
         #statusMsg { text-align: center; margin-top: 15px; font-weight: bold; }
 
         /* הגדרות הדפסה ל-A4 */
@@ -389,6 +392,9 @@
             <button type="button" class="btn btn-pdf" onclick="window.print()">
                 <i class="fa-solid fa-file-pdf"></i> הדפס / שמור כ-PDF
             </button>
+            <button type="button" class="btn btn-reset" onclick="resetForm()">
+                <i class="fa-solid fa-rotate-right"></i> טופס חדש / נקה הכל
+            </button>
         </div>
         <div id="statusMsg"></div>
     </form>
@@ -410,6 +416,21 @@
             localStorage.setItem('tala_' + id, el.value);
         });
     });
+
+    // פונקציית איפוס טופס ואיפוס הזיכרון המקומי
+    function resetForm() {
+        if (confirm('האם למחוק את כל התשובות מהמסך ולהתחיל טופס חדש?')) {
+            fields.forEach(id => {
+                const el = document.getElementById(id);
+                el.value = '';
+                localStorage.removeItem('tala_' + id);
+            });
+            document.getElementById('date').valueAsDate = new Date();
+            const status = document.getElementById('statusMsg');
+            status.style.color = '#f59e0b';
+            status.innerText = '🧹 הטופס נוקה בהצלחה! מוכן לתלמיד/ה הבא/ה.';
+        }
+    }
 
     let currentRecognition = null;
     let currentBtn = null;
@@ -479,7 +500,7 @@
     function sendToGoogleSheets() {
         const status = document.getElementById('statusMsg');
         status.style.color = '#0284c7';
-        status.innerText = '✈️️ שולח נתונים לגיליון... אנא המתן';
+        status.innerText = '✈️ שולח נתונים לגיליון... אנא המתן';
 
         const payload = {
             fullName: document.getElementById('fullName').value,
