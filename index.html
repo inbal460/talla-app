@@ -38,6 +38,59 @@
             position: relative;
         }
 
+        /* סרגל מורה נסתר/עליון */
+        .teacher-zone {
+            background: #f0fdf4;
+            border: 2px solid #4ade80;
+            border-radius: 16px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .teacher-title {
+            font-weight: 800;
+            color: #166534;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+        }
+
+        .teacher-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1;
+            justify-content: flex-end;
+        }
+
+        .teacher-select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #86efac;
+            font-family: inherit;
+            font-size: 14px;
+            min-width: 200px;
+        }
+
+        .teacher-btn {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .teacher-btn:hover { background: #15803d; }
+
         /* כותרת מרוכזת */
         .top-banner {
             text-align: center;
@@ -259,7 +312,7 @@
         @media print {
             body { background: white !important; padding: 0 !important; margin: 0 !important; }
             .container { box-shadow: none !important; border: none !important; padding: 0 !important; width: 100% !important; }
-            .actions, .speech-btn, #statusMsg { display: none !important; }
+            .actions, .speech-btn, #statusMsg, .teacher-zone { display: none !important; }
             .top-banner { margin-bottom: 18px !important; padding-bottom: 15px !important; }
             .main-title { font-size: 28px !important; }
             .flight-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 15px !important; }
@@ -274,6 +327,22 @@
 <body>
 
 <div class="container">
+    
+    <!-- סרגל מורה לטעינת תלמידים מתוך הגיליון -->
+    <div class="teacher-zone">
+        <div class="teacher-title">
+            <i class="fa-solid fa-user-check"></i> אזור מורה - טעינת תלמיד/ה להדפסה
+        </div>
+        <div class="teacher-controls">
+            <button type="button" class="teacher-btn" onclick="fetchStudentsList()">
+                <i class="fa-solid fa-rotate"></i> טען רשימת תלמידים
+            </button>
+            <select id="studentSelect" class="teacher-select" onchange="loadSelectedStudent()">
+                <option value="">-- בחר תלמיד/ה מהרשימה --</option>
+            </select>
+        </div>
+    </div>
+
     <div class="top-banner">
         <div class="main-title">
             <i class="fa-solid fa-plane-departure" style="color: #0284c7;"></i>
@@ -303,7 +372,7 @@
             
             <div class="flight-column">
                 <div class="col-header">
-                    <span class="visual-icon">🛣️️</span>
+                    <span class="visual-icon">🛣</span>
                     המסע שלי
                 </div>
 
@@ -399,6 +468,7 @@
     document.getElementById('date').valueAsDate = new Date();
 
     const fields = ['fullName', 'grade', 'date', 'dreams', 'strengths', 'challenges', 'academicGoals', 'socialGoals', 'personalGoals', 'howToAchieve'];
+    let loadedStudentsData = [];
     
     fields.forEach(id => {
         const el = document.getElementById(id);
@@ -410,6 +480,54 @@
         });
     });
 
+    // שליפת רשימת תלמידים עבור המורה
+    function fetchStudentsList() {
+        const status = document.getElementById('statusMsg');
+        status.style.color = '#0284c7';
+        status.innerText = '🔄 מוריד רשימת תלמידים מ-Google Sheets...';
+
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: "getStudents" })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success") {
+                loadedStudentsData = data.students;
+                const select = document.getElementById('studentSelect');
+                select.innerHTML = '<option value="">-- בחר תלמיד/ה מהרשימה --</option>';
+                
+                loadedStudentsData.forEach((st, idx) => {
+                    const opt = document.createElement('option');
+                    opt.value = idx;
+                    opt.innerText = st.fullName + " (כיתה " + st.grade + ")";
+                    select.appendChild(opt);
+                });
+
+                status.style.color = '#10b981';
+                status.innerText = '✅ נטענו ' + loadedStudentsData.length + ' תלמידים בהצלחה!';
+            }
+        })
+        .catch(err => {
+            status.style.color = '#ef4444';
+            status.innerText = 'שגיאה בטעינת הרשימה: ' + err.message;
+        });
+    }
+
+    // הזרקת נתוני התלמיד שנבחר לתוך הטופס המעוצב
+    function loadSelectedStudent() {
+        const select = document.getElementById('studentSelect');
+        const idx = select.value;
+        if (idx === "") return;
+
+        const st = loadedStudentsData[idx];
+        fields.forEach(id => {
+            if (st[id] !== undefined) {
+                document.getElementById(id).value = st[id];
+            }
+        });
+    }
+
     let currentRecognition = null;
     let currentBtn = null;
 
@@ -420,7 +538,6 @@
             return;
         }
 
-        // אם כבר יש הקלטה פעילה - לחיצה נוספת תפסיק אותה
         if (currentRecognition) {
             currentRecognition.stop();
             return;
@@ -479,7 +596,7 @@
     function sendToGoogleSheets() {
         const status = document.getElementById('statusMsg');
         status.style.color = '#0284c7';
-        status.innerText = '✈️ שולח נתונים לגיליון... אנא המתן';
+        status.innerText = '✈️️ שולח נתונים לגיליון... אנא המתן';
 
         const payload = {
             fullName: document.getElementById('fullName').value,
