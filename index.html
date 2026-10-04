@@ -350,7 +350,7 @@
             </button>
         </div>
         <select id="studentSelect" class="teacher-select" onchange="loadSelectedStudent()">
-            <option value="">-- בחר תלמיד/ה מהרשימה --</option>
+            <option value="">-- טוען רשימת תלמידים... --</option>
         </select>
     </div>
 
@@ -475,8 +475,6 @@
 
 <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyPsVFHyRzHgLtlnTy7WbN31m8P2mgbA3_-Z3WjkQs34_ShKuhJOMZQzwB8U9yPFBj8g/exec";
-    
-    // הסיסמה המעודכנת
     const TEACHER_PASSWORD = "Shaf1357";
 
     document.getElementById('date').valueAsDate = new Date();
@@ -494,10 +492,10 @@
         });
     });
 
-    // פונקציית תגובה לקבלת נתוני התלמידים בצורה בטוחה (JSONP)
+    // פונקציית הקולבק לקבלת הנתונים מהשרת
     window.onStudentsLoaded = function(data) {
         const status = document.getElementById('statusMsg');
-        if (data && data.status === "success") {
+        if (data && data.status === "success" && data.students) {
             loadedStudentsData = data.students;
             const select = document.getElementById('studentSelect');
             select.innerHTML = '<option value="">-- בחר תלמיד/ה מהרשימה --</option>';
@@ -509,18 +507,15 @@
                 select.appendChild(opt);
             });
 
-            document.getElementById('teacherAuthBox').style.display = 'none';
-            select.style.display = 'inline-block';
-
             status.style.color = '#10b981';
-            status.innerText = '✅ זיהוי מורה אושר. נטענו ' + loadedStudentsData.length + ' תלמידים!';
+            status.innerText = '✅ נטענו ' + loadedStudentsData.length + ' תלמידים מ-Google Sheets!';
         } else {
             status.style.color = '#ef4444';
-            status.innerText = 'שגיאה בטעינת הנתונים מהגיליון.';
+            status.innerText = 'שגיאה בטעינת הנתונים מ-Google Sheets.';
         }
     };
 
-    // אימות סיסמה ושליפת התלמידים ללא חסימת בדפדפן
+    // אימות סיסמה וחשיפת תיבת הבחירה
     function verifyTeacherAndFetch() {
         const pass = document.getElementById('teacherPassword').value;
         if (pass !== TEACHER_PASSWORD) {
@@ -528,11 +523,16 @@
             return;
         }
 
+        // חשוף את תיבת הבחירה מיד בלחיצה
+        document.getElementById('teacherAuthBox').style.display = 'none';
+        const select = document.getElementById('studentSelect');
+        select.style.display = 'inline-block';
+
         const status = document.getElementById('statusMsg');
         status.style.color = '#0284c7';
         status.innerText = '🔄 מוריד רשימת תלמידים מ-Google Sheets...';
 
-        // טעינה באמצעות תג סקריפט דינמי לעקיפת חסימת CORS בדפדפנים
+        // קריאה דינמית ל-Google Apps Script
         const oldScript = document.getElementById('jsonpScript');
         if (oldScript) oldScript.remove();
 
@@ -541,12 +541,11 @@
         script.src = GOOGLE_SCRIPT_URL + '?action=getStudents&callback=onStudentsLoaded';
         script.onerror = function() {
             status.style.color = '#ef4444';
-            status.innerText = 'שגיאה בתקשורת עם הגיליון.';
+            status.innerText = 'שגיאה בתקשורת מול הגיליון. אנא ודא שה-Apps Script פרוס כראוי.';
         };
         document.body.appendChild(script);
     }
 
-    // הזרקת נתוני התלמיד שנבחר לתוך הטופס המעוצב
     function loadSelectedStudent() {
         const select = document.getElementById('studentSelect');
         const idx = select.value;
@@ -556,7 +555,6 @@
         fields.forEach(id => {
             if (st[id] !== undefined) {
                 const el = document.getElementById(id);
-                // פורמט תאריך במידת הצורך
                 if (id === 'date' && st[id] && st[id].includes('T')) {
                     el.value = st[id].split('T')[0];
                 } else {
