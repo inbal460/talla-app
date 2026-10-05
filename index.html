@@ -248,9 +248,6 @@
         .btn-submit { background: #10b981; color: white; }
         .btn-submit:hover { background: #059669; }
 
-        .btn-whatsapp { background: #25d366; color: white; }
-        .btn-whatsapp:hover { background: #1da851; }
-
         .btn-pdf { background: #0284c7; color: white; }
         .btn-pdf:hover { background: #0369a1; }
 
@@ -267,7 +264,7 @@
 
         #statusMsg { text-align: center; margin-top: 15px; font-weight: bold; }
 
-        /* הגדרות הדפסה קשיחות ל-A4 יחיד */
+        /* הגדרות הדפסה ל-A4 יחיד */
         @page { size: A4 portrait; margin: 5mm; }
 
         @media print {
@@ -481,19 +478,16 @@
 
         <div class="actions">
             <button type="button" class="btn btn-submit" onclick="sendToGoogleSheets()">
-                <i class="fa-solid fa-paper-plane"></i> שמור ושגר לגיליון
-            </button>
-            <button type="button" id="btnWhatsapp" class="btn btn-whatsapp" onclick="shareSummaryWhatsApp()" disabled title="יש לשמור תחילה את הנתונים בגיליון">
-                <i class="fa-brands fa-whatsapp"></i> שתף סיכום ב-WhatsApp
+                <i class="fa-solid fa-paper-plane"></i> 1. שמור ושגר לגיליון
             </button>
             <button type="button" id="btnPdf" class="btn btn-pdf" onclick="window.print()" disabled title="יש לשמור תחילה את הנתונים בגיליון">
-                <i class="fa-solid fa-file-pdf"></i> הדפס / שמור כ-PDF
+                <i class="fa-solid fa-file-pdf"></i> 2. הדפס / שמור כ-PDF
             </button>
             <button type="button" class="btn btn-reset" onclick="resetForm()">
                 <i class="fa-solid fa-rotate-right"></i> טופס חדש
             </button>
         </div>
-        <div id="statusMsg">⚠️ יש ללחוץ על "שמור ושגר לגיליון" לפני שניתן להדפיס או לשתף.</div>
+        <div id="statusMsg">⚠️ יש ללחוץ על "שמור ושגר לגיליון" לפני שניתן להדפיס או לשמור כ-PDF.</div>
     </form>
 </div>
 
@@ -516,15 +510,13 @@
     });
 
     function lockActions() {
-        document.getElementById('btnWhatsapp').disabled = true;
         document.getElementById('btnPdf').disabled = true;
         const status = document.getElementById('statusMsg');
         status.style.color = '#d97706';
-        status.innerText = '⚠️ בוצעו שינויים - יש ללחוץ על "שמור ושגר לגיליון" כדי לאפשר הדפסה/שיתוף.';
+        status.innerText = '⚠️ בוצעו שינויים - יש ללחוץ על "1. שמור ושגר לגיליון" כדי לאפשר הדפסה/שמירה כ-PDF.';
     }
 
     function unlockActions() {
-        document.getElementById('btnWhatsapp').disabled = false;
         document.getElementById('btnPdf').disabled = false;
     }
 
@@ -560,40 +552,13 @@
         })
         .then(() => {
             status.style.color = '#10b981';
-            status.innerText = '🎉 הנתונים נשמרו בהצלחה בגיליון! כעת ניתן להדפיס או לשתף.';
+            status.innerText = '🎉 הנתונים נשמרו בגיליון! כעת לחץ על "2. הדפס / שמור כ-PDF" כדי לשמור את הקובץ ולשלוח למורה.';
             unlockActions();
         })
         .catch(err => {
             status.style.color = '#ef4444';
             status.innerText = 'שגיאה בשליחת הנתונים: ' + err.message;
         });
-    }
-
-    function shareSummaryWhatsApp() {
-        const name = document.getElementById('fullName').value || 'ללא שם';
-        const grade = document.getElementById('grade').value || '-';
-        const date = document.getElementById('date').value || '-';
-        
-        let text = `✨ *תכנית לימודים אישית (תל"א) - המסע שלי* ✨\n\n`;
-        text += `👤 *שם התלמיד/ה:* ${name}\n`;
-        text += `🏫 *כיתה:* ${grade}\n`;
-        text += `📅 *תאריך:* ${date}\n\n`;
-        
-        text += `🛣️ *המסע שלי:*\n`;
-        text += `💭 *חלומות:* ${document.getElementById('dreams').value || '-'}\n`;
-        text += `💪 *חוזקות:* ${document.getElementById('strengths').value || '-'}\n`;
-        text += `🚧 *מעכבים:* ${document.getElementById('challenges').value || '-'}\n\n`;
-        
-        text += `🎯 *המטרות שלי:*\n`;
-        text += `📚 *תחום לימודי:* ${document.getElementById('academicGoals').value || '-'}\n`;
-        text += `🤝 *תחום חברתי:* ${document.getElementById('socialGoals').value || '-'}\n`;
-        text += `❤️️ *מטרות אישיות:* ${document.getElementById('personalGoals').value || '-'}\n\n`;
-        
-        text += `🗺️ *דרך הפעולה:*\n`;
-        text += `🚀 *איך אשיג את המטרות:* ${document.getElementById('howToAchieve').value || '-'}\n`;
-
-        const encodedText = encodeURIComponent(text);
-        window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
     }
 
     function resetForm() {
@@ -607,7 +572,7 @@
             lockActions();
             const status = document.getElementById('statusMsg');
             status.style.color = '#f59e0b';
-            status.innerText = '🧹 הטופס נוקה בהצלחה! יש למלא ולשמור לפני שיתוף.';
+            status.innerText = '🧹 הטופס נוקה בהצלחה! יש למלא ולשמור לפני הדפסה.';
         }
     }
 
