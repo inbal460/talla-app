@@ -99,10 +99,10 @@
             direction: rtl;
         }
 
-        /* עיצוב ייעודי לשדה התאריך למניעת הפיכת הסדר */
+        /* עיצוב ייעודי לשדה התאריך */
         #date {
             direction: ltr !important;
-            text-align: right !important;
+            text-align: center !important;
         }
 
         .flight-grid {
@@ -278,7 +278,6 @@
             opacity: 0.7;
         }
 
-        /* הודעת סטטוס מחוץ לכרטיס המודפס */
         #statusMsg {
             text-align: center;
             margin-top: 20px;
@@ -412,13 +411,12 @@
     </form>
 </div>
 
-<!-- הודעת סטטוס מחוץ למכולה המצולמת -->
 <div id="statusMsg">⚠️ יש ללחוץ על "שמור ושגר לגיליון" לפני שניתן להוריד את התמונה.</div>
 
 <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyPsVFHyRzHgLtlnTy7WbN31m8P2mgbA3_-Z3WjkQs34_ShKuhJOMZQzwB8U9yPFBj8g/exec";
 
-    // יצירת פורמט תאריך ישראלי מפורש: DD/MM/YYYY
+    // יצירת תאריך במבנה DD/MM/YYYY
     function getTodayIsraeliDate() {
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
@@ -427,17 +425,31 @@
         return `${dd}/${mm}/${yyyy}`;
     }
 
-    const dateField = document.getElementById('date');
-    if (!localStorage.getItem('tala_date')) {
-        dateField.value = getTodayIsraeliDate();
+    // המרת מחרוזת מפורמט YYYY-MM-DD לפורמט DD/MM/YYYY במידה ונשמר ערך ישן בדפדפן
+    function fixDateString(val) {
+        if (!val) return getTodayIsraeliDate();
+        if (val.includes('-')) {
+            const parts = val.split('-');
+            if (parts.length === 3 && parts[0].length === 4) {
+                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+        }
+        return val;
     }
+
+    const dateField = document.getElementById('date');
+    const savedDate = localStorage.getItem('tala_date');
+    dateField.value = fixDateString(savedDate);
+    localStorage.setItem('tala_date', dateField.value);
 
     const fields = ['fullName', 'grade', 'date', 'dreams', 'strengths', 'challenges', 'academicGoals', 'socialGoals', 'personalGoals', 'howToAchieve'];
     
     fields.forEach(id => {
         const el = document.getElementById(id);
-        const saved = localStorage.getItem('tala_' + id);
-        if (saved) el.value = saved;
+        if (id !== 'date') {
+            const saved = localStorage.getItem('tala_' + id);
+            if (saved) el.value = saved;
+        }
         
         el.addEventListener('input', () => {
             localStorage.setItem('tala_' + id, el.value);
@@ -555,6 +567,7 @@
                 localStorage.removeItem('tala_' + id);
             });
             document.getElementById('date').value = getTodayIsraeliDate();
+            localStorage.setItem('tala_date', getTodayIsraeliDate());
             lockActions();
             const status = document.getElementById('statusMsg');
             status.style.color = '#f59e0b';
