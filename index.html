@@ -99,6 +99,12 @@
             direction: rtl;
         }
 
+        /* עיצוב ייעודי לשדה התאריך למניעת הפיכת הסדר */
+        #date {
+            direction: ltr !important;
+            text-align: right !important;
+        }
+
         .flight-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -272,7 +278,13 @@
             opacity: 0.7;
         }
 
-        #statusMsg { text-align: center; margin-top: 15px; font-weight: bold; }
+        /* הודעת סטטוס מחוץ לכרטיס המודפס */
+        #statusMsg {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -397,15 +409,17 @@
                 <i class="fa-solid fa-rotate-right"></i> טופס חדש
             </button>
         </div>
-        <div id="statusMsg">⚠️ יש ללחוץ על "שמור ושגר לגיליון" לפני שניתן להוריד את התמונה.</div>
     </form>
 </div>
+
+<!-- הודעת סטטוס מחוץ למכולה המצולמת -->
+<div id="statusMsg">⚠️ יש ללחוץ על "שמור ושגר לגיליון" לפני שניתן להוריד את התמונה.</div>
 
 <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyPsVFHyRzHgLtlnTy7WbN31m8P2mgbA3_-Z3WjkQs34_ShKuhJOMZQzwB8U9yPFBj8g/exec";
 
-    // פורמט תאריך ישראלי מקובל (DD/MM/YYYY)
-    function setFormattedTodayDate() {
+    // יצירת פורמט תאריך ישראלי מפורש: DD/MM/YYYY
+    function getTodayIsraeliDate() {
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
         const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -415,7 +429,7 @@
 
     const dateField = document.getElementById('date');
     if (!localStorage.getItem('tala_date')) {
-        dateField.value = setFormattedTodayDate();
+        dateField.value = getTodayIsraeliDate();
     }
 
     const fields = ['fullName', 'grade', 'date', 'dreams', 'strengths', 'challenges', 'academicGoals', 'socialGoals', 'personalGoals', 'howToAchieve'];
@@ -540,7 +554,7 @@
                 el.value = '';
                 localStorage.removeItem('tala_' + id);
             });
-            document.getElementById('date').value = setFormattedTodayDate();
+            document.getElementById('date').value = getTodayIsraeliDate();
             lockActions();
             const status = document.getElementById('statusMsg');
             status.style.color = '#f59e0b';
