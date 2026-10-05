@@ -14,7 +14,7 @@
             --card-border: #38bdf8;
             --card-bg: #ffffff;
             --text: #0f172a;
-            --tala-color: #0284c7; /* טורקיז-כחול לאותיות ת.ל.א */
+            --tala-color: #0284c7;
         }
 
         * { box-sizing: border-box; }
@@ -59,13 +59,11 @@
             margin-bottom: 18px;
         }
 
-        /* אותיות ת.ל.א בצבע טורקיז-כחול ללא עיבוי או רקע */
         .tala-letter {
             color: var(--tala-color);
             font-weight: 800;
         }
 
-        /* מלבן פרטים אישיים ברוחב מלא עם צבע בולט וחי */
         .personal-details-box {
             background: #e0f2fe;
             border: 2px solid #0284c7;
@@ -215,58 +213,3 @@
         .speech-btn.recording {
             background: #ef4444 !important;
             color: white !important;
-            animation: pulse 1.2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.6; }
-            100% { opacity: 1; }
-        }
-
-        .signatures {
-            margin-top: 35px;
-            border-top: 2px dashed #7dd3fc;
-            padding-top: 25px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            text-align: center;
-        }
-
-        .sig-box {
-            background: #ffffff;
-            padding: 18px 12px;
-            border-radius: 14px;
-            border: 2px solid #cbd5e1;
-            font-size: 15px;
-        }
-
-        .sig-line {
-            margin-top: 45px;
-            border-top: 2px solid #475569;
-        }
-
-        .actions {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 50px;
-            font-size: 17px;
-            font-weight: 800;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: all 0.2s;
-        }
-
-        .btn-submit { background: #10
