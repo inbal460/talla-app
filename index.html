@@ -6,8 +6,6 @@
     <title>תכנית לימודים אישית - המסע שלי</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <!-- ספרייה ליצירת קובץ PDF בדפדפן -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --sky-bg: #e0f2fe;
@@ -259,7 +257,6 @@
         .btn-reset { background: #f59e0b; color: white; }
         .btn-reset:hover { background: #d97706; }
 
-        /* עיצוב כפתורים נעולים עד לשמירה */
         .btn:disabled {
             background: #cbd5e1 !important;
             color: #64748b !important;
@@ -270,27 +267,110 @@
 
         #statusMsg { text-align: center; margin-top: 15px; font-weight: bold; }
 
-        /* הגדרות הדפסה ל-A4 */
-        @page { size: A4 portrait; margin: 10mm; }
+        /* הגדרות הדפסה קשיחות ל-A4 יחיד */
+        @page { size: A4 portrait; margin: 5mm; }
 
         @media print {
-            body { background: white !important; padding: 0 !important; margin: 0 !important; }
-            .container { box-shadow: none !important; border: none !important; padding: 0 !important; width: 100% !important; }
+            html, body {
+                height: 100%;
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                overflow: hidden;
+            }
+
+            .container {
+                box-shadow: none !important;
+                border: 2px solid #38bdf8 !important;
+                padding: 12px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                border-radius: 12px !important;
+            }
+
             .actions, .speech-btn, #statusMsg { display: none !important; }
-            .top-banner { margin-bottom: 18px !important; padding-bottom: 15px !important; }
-            .main-title { font-size: 28px !important; }
-            .flight-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 15px !important; }
-            .flight-column { padding: 15px !important; }
-            textarea { min-height: 95px !important; font-size: 13px !important; }
-            #howToAchieve { min-height: 280px !important; }
-            .signatures { margin-top: 25px !important; padding-top: 18px !important; }
-            .sig-line { margin-top: 45px !important; }
+
+            .top-banner {
+                margin-bottom: 10px !important;
+                padding-bottom: 10px !important;
+            }
+
+            .main-title {
+                font-size: 24px !important;
+                margin-bottom: 8px !important;
+            }
+
+            .personal-details-box {
+                padding: 8px 15px !important;
+            }
+
+            .details-grid label {
+                font-size: 12px !important;
+                margin-bottom: 2px !important;
+            }
+
+            .details-grid input {
+                padding: 4px 8px !important;
+                font-size: 13px !important;
+            }
+
+            .flight-grid {
+                display: grid !important;
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 10px !important;
+                margin-top: 10px !important;
+            }
+
+            .flight-column {
+                padding: 10px !important;
+                gap: 8px !important;
+                border-radius: 12px !important;
+            }
+
+            .col-header {
+                font-size: 16px !important;
+                padding-bottom: 6px !important;
+            }
+
+            label {
+                font-size: 12px !important;
+            }
+
+            .visual-icon {
+                font-size: 15px !important;
+            }
+
+            textarea {
+                min-height: 65px !important;
+                font-size: 12px !important;
+                padding: 6px !important;
+                border-radius: 6px !important;
+            }
+
+            #howToAchieve {
+                min-height: 220px !important;
+            }
+
+            .signatures {
+                margin-top: 15px !important;
+                padding-top: 10px !important;
+                gap: 10px !important;
+            }
+
+            .sig-box {
+                padding: 8px !important;
+                font-size: 12px !important;
+            }
+
+            .sig-line {
+                margin-top: 25px !important;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container" id="pdfContent">
+<div class="container">
     
     <div class="top-banner">
         <div class="main-title">
@@ -403,8 +483,8 @@
             <button type="button" class="btn btn-submit" onclick="sendToGoogleSheets()">
                 <i class="fa-solid fa-paper-plane"></i> שמור ושגר לגיליון
             </button>
-            <button type="button" id="btnWhatsapp" class="btn btn-whatsapp" onclick="sharePdfViaWhatsApp()" disabled title="יש לשמור תחילה את הנתונים בגיליון">
-                <i class="fa-brands fa-whatsapp"></i> שתף קובץ PDF ב-WhatsApp
+            <button type="button" id="btnWhatsapp" class="btn btn-whatsapp" onclick="shareSummaryWhatsApp()" disabled title="יש לשמור תחילה את הנתונים בגיליון">
+                <i class="fa-brands fa-whatsapp"></i> שתף סיכום ב-WhatsApp
             </button>
             <button type="button" id="btnPdf" class="btn btn-pdf" onclick="window.print()" disabled title="יש לשמור תחילה את הנתונים בגיליון">
                 <i class="fa-solid fa-file-pdf"></i> הדפס / שמור כ-PDF
@@ -431,7 +511,6 @@
         
         el.addEventListener('input', () => {
             localStorage.setItem('tala_' + id, el.value);
-            // אם התלמיד משנה טקסט לאחר שמשמר, דורשים שמירה מחדש
             lockActions();
         });
     });
@@ -481,7 +560,7 @@
         })
         .then(() => {
             status.style.color = '#10b981';
-            status.innerText = '🎉 הנתונים נשמרו בהצלחה בגיליון! כעת ניתן להדפיס או לשתף ב-WhatsApp.';
+            status.innerText = '🎉 הנתונים נשמרו בהצלחה בגיליון! כעת ניתן להדפיס או לשתף.';
             unlockActions();
         })
         .catch(err => {
@@ -490,50 +569,31 @@
         });
     }
 
-    // פונקציית יצירת PDF ושיתוף הקובץ ב-WhatsApp
-    async function sharePdfViaWhatsApp() {
-        const name = document.getElementById('fullName').value || 'תלמיד';
-        const fileName = `תלא_${name}.pdf`.replace(/\s+/g, '_');
-        const status = document.getElementById('statusMsg');
+    function shareSummaryWhatsApp() {
+        const name = document.getElementById('fullName').value || 'ללא שם';
+        const grade = document.getElementById('grade').value || '-';
+        const date = document.getElementById('date').value || '-';
         
-        status.style.color = '#0284c7';
-        status.innerText = '📄 מכין קובץ PDF לשיתוף...';
+        let text = `✨ *תכנית לימודים אישית (תל"א) - המסע שלי* ✨\n\n`;
+        text += `👤 *שם התלמיד/ה:* ${name}\n`;
+        text += `🏫 *כיתה:* ${grade}\n`;
+        text += `📅 *תאריך:* ${date}\n\n`;
+        
+        text += `🛣️ *המסע שלי:*\n`;
+        text += `💭 *חלומות:* ${document.getElementById('dreams').value || '-'}\n`;
+        text += `💪 *חוזקות:* ${document.getElementById('strengths').value || '-'}\n`;
+        text += `🚧 *מעכבים:* ${document.getElementById('challenges').value || '-'}\n\n`;
+        
+        text += `🎯 *המטרות שלי:*\n`;
+        text += `📚 *תחום לימודי:* ${document.getElementById('academicGoals').value || '-'}\n`;
+        text += `🤝 *תחום חברתי:* ${document.getElementById('socialGoals').value || '-'}\n`;
+        text += `❤️️ *מטרות אישיות:* ${document.getElementById('personalGoals').value || '-'}\n\n`;
+        
+        text += `🗺️ *דרך הפעולה:*\n`;
+        text += `🚀 *איך אשיג את המטרות:* ${document.getElementById('howToAchieve').value || '-'}\n`;
 
-        const element = document.getElementById('pdfContent');
-        const opt = {
-            margin: 5,
-            filename: fileName,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        try {
-            // יצירת קובץ ה-PDF בזיכרון
-            const pdfBlob = await html2pdf().set(opt).from(element).output('blob');
-            const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
-
-            // בדיקה אם הדפדפן/טלפון תומך בשיתוף קבצים ישיר (Web Share API)
-            if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-                await navigator.share({
-                    files: [pdfFile],
-                    title: `תל"א - ${name}`,
-                    text: `שלום מורה, מצורף קובץ PDF של תכנית הלימודים האישית (תל"א) שלי!`
-                });
-                status.style.color = '#10b981';
-                status.innerText = '✅ הקובץ הועבר לשיתוף!';
-            } else {
-                // מנגנון גיבוי במידה והשיתוף הישיר אינו נתמך (למשל במחשב נייח): הורדת ה-PDF והודעת הסבר
-                html2pdf().set(opt).from(element).save();
-                alert('קובץ ה-PDF ירד למכשירך! כעת ניתן לצרף אותו כקובץ ב-WhatsApp.');
-                status.style.color = '#10b981';
-                status.innerText = '⬇️ הקובץ הורד למכשיר.';
-            }
-        } catch (error) {
-            console.error('Error sharing PDF:', error);
-            status.style.color = '#ef4444';
-            status.innerText = 'שגיאה ביצירת קובץ ה-PDF לשיתוף.';
-        }
+        const encodedText = encodeURIComponent(text);
+        window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
     }
 
     function resetForm() {
