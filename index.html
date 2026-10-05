@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>תכנית לימודים אישית - המסע שלי</title>
+    <title>תל"א - תכנית לימודים אישית</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -11,11 +11,10 @@
         :root {
             --primary: #0284c7;
             --primary-dark: #0369a1;
-            --primary-light: #f0f9ff;
+            --primary-light: #e0f2fe;
             --accent: #0f172a;
-            --border-color: #e2e8f0;
-            --border-hover: #38bdf8;
-            --bg-clean: #ffffff;
+            --border-color: #cbd5e1;
+            --tala-color: #0284c7;
             --text-main: #1e293b;
             --text-muted: #64748b;
         }
@@ -27,7 +26,7 @@
             background-color: #ffffff;
             color: var(--text-main);
             margin: 0;
-            padding: 30px 15px;
+            padding: 25px 15px;
             direction: rtl;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
@@ -38,56 +37,73 @@
             margin: 0 auto;
             background: #ffffff;
             border-radius: 20px;
-            padding: 35px 30px;
-            border: 1px solid #cbd5e1;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            padding: 30px;
+            border: 2px solid #bae6fd;
+            box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.08);
             position: relative;
             text-align: right;
         }
 
-        /* כותרת מנהלים */
+        /* כותרת עם לוגו והדגשת ת.ל.א */
         .top-banner {
-            text-align: center;
+            position: relative;
             margin-bottom: 25px;
-            border-bottom: 2px solid #f1f5f9;
-            padding-bottom: 20px;
+            border-bottom: 2px dashed #bae6fd;
+            padding-bottom: 22px;
         }
 
-        .main-title {
-            font-size: 30px;
-            font-weight: 800;
-            color: var(--accent);
+        .logo-header-box {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 18px;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header-logo-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            object-fit: cover;
+            border: 2px solid #38bdf8;
+            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.15);
+        }
+
+        .main-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--accent);
+            margin: 0;
             letter-spacing: -0.5px;
         }
 
-        .main-title i {
-            color: var(--primary);
-            background: var(--primary-light);
-            padding: 10px;
-            border-radius: 12px;
-            font-size: 24px;
+        /* עיצוב צבעוני מודגש לאותיות ת.ל.א */
+        .tala-letter {
+            color: var(--tala-color);
+            background: #e0f2fe;
+            padding: 2px 8px;
+            border-radius: 8px;
+            border: 1px solid #7dd3fc;
+            font-size: 34px;
+            display: inline-block;
         }
 
-        /* תיבת פרטים אישיים */
+        /* מלבן פרטים אישיים - מתוח ברוחב מלא ועם צבע חי */
         .personal-details-box {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 18px 25px;
-            max-width: 800px;
-            margin: 0 auto;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+            border: 2px solid #38bdf8;
+            border-radius: 16px;
+            padding: 18px 22px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.12);
         }
 
         .details-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
+            gap: 20px;
             text-align: right;
+            width: 100%;
         }
 
         @media (max-width: 650px) {
@@ -95,21 +111,20 @@
         }
 
         .details-grid label {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--primary-dark);
+            font-size: 14px;
+            font-weight: 800;
+            color: #0369a1;
             display: block;
             margin-bottom: 6px;
             text-align: right;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
         }
 
         .details-grid input {
-            padding: 10px 14px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
+            padding: 11px 14px;
+            border: 2px solid #93c5fd;
+            border-radius: 10px;
             font-size: 15px;
+            font-weight: 600;
             width: 100%;
             font-family: inherit;
             background: #ffffff;
@@ -122,7 +137,7 @@
         .details-grid input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
         }
 
         #date {
@@ -136,6 +151,7 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 22px;
             margin-top: 25px;
+            width: 100%;
         }
 
         @media (max-width: 850px) {
@@ -144,28 +160,24 @@
 
         .flight-column {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 22px 18px;
+            border: 2px solid #7dd3fc;
+            border-radius: 18px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 18px;
-            transition: border-color 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
             position: relative;
             text-align: right;
         }
 
-        .flight-column:hover {
-            border-color: #cbd5e1;
-        }
-
         .col-header {
-            font-size: 20px;
+            font-size: 21px;
             font-weight: 800;
-            color: var(--accent);
+            color: var(--primary-dark);
             text-align: center;
-            border-bottom: 1px solid #f1f5f9;
-            padding-bottom: 14px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -180,9 +192,9 @@
         }
 
         label {
-            font-weight: 700;
+            font-weight: 800;
             font-size: 15px;
-            color: #334155;
+            color: #1e293b;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -191,17 +203,17 @@
         }
 
         .visual-icon {
-            font-size: 20px;
+            font-size: 22px;
             display: inline-block;
         }
 
         textarea {
             width: 100%;
             padding: 12px 14px;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
             font-family: inherit;
-            font-size: 14px;
+            font-size: 15px;
             resize: vertical;
             min-height: 110px;
             background: #ffffff;
@@ -215,7 +227,7 @@
         textarea:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
         }
 
         .speech-btn {
@@ -226,7 +238,7 @@
             padding: 7px 12px;
             cursor: pointer;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             align-self: flex-start;
             margin-top: 2px;
             display: flex;
@@ -252,10 +264,10 @@
             100% { opacity: 1; }
         }
 
-        /* חתימות נקיות להדפסה */
+        /* חתימות להדפסה */
         .signatures {
             margin-top: 35px;
-            border-top: 1px solid #e2e8f0;
+            border-top: 2px dashed #bae6fd;
             padding-top: 25px;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -267,18 +279,18 @@
             background: #ffffff;
             padding: 16px 12px;
             border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            font-size: 14px;
-            font-weight: 600;
-            color: #475569;
+            border: 1px solid #cbd5e1;
+            font-size: 15px;
+            font-weight: 700;
+            color: #334155;
         }
 
         .sig-line {
             margin-top: 40px;
-            border-top: 1px solid #94a3b8;
+            border-top: 2px solid #64748b;
         }
 
-        /* כפתורי פרימיום */
+        /* כפתורי פעולה */
         .actions {
             margin-top: 30px;
             display: flex;
@@ -288,16 +300,16 @@
         }
 
         .btn {
-            padding: 12px 26px;
+            padding: 13px 28px;
             border: none;
             border-radius: 50px;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
             transition: all 0.2s ease;
         }
 
@@ -322,8 +334,8 @@
         #statusMsg {
             text-align: center;
             margin-top: 20px;
-            font-weight: 600;
-            font-size: 15px;
+            font-weight: 700;
+            font-size: 16px;
             color: var(--text-muted);
         }
     </style>
@@ -333,9 +345,11 @@
 <div class="container" id="talaCard">
     
     <div class="top-banner">
-        <div class="main-title">
-            <i class="fa-solid fa-plane-departure"></i>
-            תכנית לימודים אישית
+        <div class="logo-header-box">
+            <img src="תל”א.jpg" alt="לוגו תל''א" class="header-logo-img">
+            <h1 class="main-title">
+                <span class="tala-letter">ת</span>כנית <span class="tala-letter">ל</span>ימודים <span class="tala-letter">א</span>ישית
+            </h1>
         </div>
         
         <div class="personal-details-box">
@@ -367,319 +381,4 @@
 
                 <div class="form-group">
                     <label><span class="visual-icon">💭</span> החלומות שלי:</label>
-                    <textarea id="dreams" placeholder="מה היית רוצה להגשים?"></textarea>
-                    <button type="button" class="speech-btn" onclick="toggleSpeech('dreams', this)"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
-                </div>
-
-                <div class="form-group">
-                    <label><span class="visual-icon">💪</span> החוזקות שלי:</label>
-                    <textarea id="strengths" placeholder="במה אני טוב/ה?"></textarea>
-                    <button type="button" class="speech-btn" onclick="toggleSpeech('strengths', this)"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
-                </div>
-
-                <div class="form-group">
-                    <label><span class="visual-icon">🚧</span> המעכבים שלי:</label>
-                    <textarea id="challenges" placeholder="מה מאתגר אותי?"></textarea>
-                    <button type="button" class="speech-btn" onclick="toggleSpeech('challenges', this)"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
-                </div>
-            </div>
-
-            <div class="flight-column" style="border-color: #7dd3fc;">
-                <div class="col-header">
-                    <span class="visual-icon">🎯</span>
-                    המטרות שלי
-                </div>
-
-                <div class="form-group">
-                    <label><span class="visual-icon">📚</span> תחום לימודי:</label>
-                    <textarea id="academicGoals" placeholder="מטרה לימודית..."></textarea>
-                    <button type="button" class="speech-btn" onclick="toggleSpeech('academicGoals', this)"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
-                </div>
-
-                <div class="form-group">
-                    <label><span class="visual-icon">🤝</span> תחום חברתי:</label>
-                    <textarea id="socialGoals" placeholder="מטרה חברתית..."></textarea>
-                    <button type="button" class="speech-btn" onclick="toggleSpeech('socialGoals', this)"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
-                </div>
-
-                <div class="form-group">
-                    <label><span class="visual-icon">❤️</span> מטרות אישיות:</label>
-                    <textarea id="personalGoals" placeholder="מטרה אישית..."></textarea>
-                    <button type="button" class="speech-btn" onclick="toggleSpeech('personalGoals', this)"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
-                </div>
-            </div>
-
-            <div class="flight-column">
-                <div class="col-header">
-                    <span class="visual-icon">🗺️</span>
-                    דרך הפעולה
-                </div>
-
-                <div class="form-group" style="flex:1;">
-                    <label><span class="visual-icon">🚀</span> איך אשיג את המטרות שלי?</label>
-                    <textarea id="howToAchieve" placeholder="צעדים מעשיים והעזרה שאצטרך..."></textarea>
-                    <button type="button" class="speech-btn" onclick="toggleSpeech('howToAchieve', this)"><i class="fa-solid fa-microphone"></i> הקלט תשובה</button>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="signatures">
-            <div class="sig-box">
-                <strong>חתימת התלמיד/ה</strong>
-                <div class="sig-line"></div>
-            </div>
-            <div class="sig-box">
-                <strong>חתימת המחנכ/ת</strong>
-                <div class="sig-line"></div>
-            </div>
-            <div class="sig-box">
-                <strong>חתימת ההורה</strong>
-                <div class="sig-line"></div>
-            </div>
-        </div>
-
-        <div class="actions">
-            <button type="button" class="btn btn-submit" onclick="sendToGoogleSheets()">
-                <i class="fa-solid fa-paper-plane"></i> 1. שמור ושגר לגיליון
-            </button>
-            <button type="button" id="btnImage" class="btn btn-image" onclick="downloadAsA4Image()" disabled title="יש לשמור תחילה את הנתונים בגיליון">
-                <i class="fa-solid fa-image"></i> 2. הורד תמונה לגלרייה (A4)
-            </button>
-            <button type="button" class="btn btn-reset" onclick="resetForm()">
-                <i class="fa-solid fa-rotate-right"></i> טופס חדש
-            </button>
-        </div>
-    </form>
-</div>
-
-<div id="statusMsg">⚠️ יש ללחוץ על "שמור ושגר לגיליון" לפני שניתן להוריד את התמונה.</div>
-
-<script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyPsVFHyRzHgLtlnTy7WbN31m8P2mgbA3_-Z3WjkQs34_ShKuhJOMZQzwB8U9yPFBj8g/exec";
-
-    function getTodayIsraeliDate() {
-        const today = new Date();
-        const dd = String(today.getDate()).padStart(2, '0');
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const yyyy = today.getFullYear();
-        return `${dd}/${mm}/${yyyy}`;
-    }
-
-    function fixDateString(val) {
-        if (!val) return getTodayIsraeliDate();
-        if (val.includes('-')) {
-            const parts = val.split('-');
-            if (parts.length === 3 && parts[0].length === 4) {
-                return `${parts[2]}/${parts[1]}/${parts[0]}`;
-            }
-        }
-        return val;
-    }
-
-    const dateField = document.getElementById('date');
-    const savedDate = localStorage.getItem('tala_date');
-    dateField.value = fixDateString(savedDate);
-    localStorage.setItem('tala_date', dateField.value);
-
-    const fields = ['fullName', 'grade', 'date', 'dreams', 'strengths', 'challenges', 'academicGoals', 'socialGoals', 'personalGoals', 'howToAchieve'];
-    
-    fields.forEach(id => {
-        const el = document.getElementById(id);
-        if (id !== 'date') {
-            const saved = localStorage.getItem('tala_' + id);
-            if (saved) el.value = saved;
-        }
-        
-        el.addEventListener('input', () => {
-            localStorage.setItem('tala_' + id, el.value);
-            lockActions();
-        });
-    });
-
-    function lockActions() {
-        document.getElementById('btnImage').disabled = true;
-        const status = document.getElementById('statusMsg');
-        status.style.color = '#d97706';
-        status.innerText = '⚠️ בוצעו שינויים - יש ללחוץ על "1. שמור ושגר לגיליון" כדי לאפשר הורדת תמונה.';
-    }
-
-    function unlockActions() {
-        document.getElementById('btnImage').disabled = false;
-    }
-
-    function sendToGoogleSheets() {
-        const fullName = document.getElementById('fullName').value.trim();
-        if (!fullName) {
-            alert('אנא הזן שם מלא לפני השמירה.');
-            return;
-        }
-
-        const status = document.getElementById('statusMsg');
-        status.style.color = '#0284c7';
-        status.innerText = '✈️ שולח נתונים לגיליון... אנא המתן';
-
-        const payload = {
-            fullName: fullName,
-            grade: document.getElementById('grade').value,
-            date: document.getElementById('date').value,
-            dreams: document.getElementById('dreams').value,
-            strengths: document.getElementById('strengths').value,
-            challenges: document.getElementById('challenges').value,
-            academicGoals: document.getElementById('academicGoals').value,
-            socialGoals: document.getElementById('socialGoals').value,
-            personalGoals: document.getElementById('personalGoals').value,
-            howToAchieve: document.getElementById('howToAchieve').value
-        };
-
-        fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
-        .then(() => {
-            status.style.color = '#10b981';
-            status.innerText = '🎉 הנתונים נשמרו בגיליון! כעת לחץ על "2. הורד תמונה לגלרייה" כדי לשמור את התמונה ולשלוח למורה ב-WhatsApp.';
-            unlockActions();
-        })
-        .catch(err => {
-            status.style.color = '#ef4444';
-            status.innerText = 'שגיאה בשליחת הנתונים: ' + err.message;
-        });
-    }
-
-    function downloadAsA4Image() {
-        const status = document.getElementById('statusMsg');
-        status.style.color = '#0284c7';
-        status.innerText = '📸 מייצר תמונה מעוצבת בפורמט A4... אנא המתן';
-
-        const card = document.getElementById('talaCard');
-        const speechBtns = document.querySelectorAll('.speech-btn');
-        const actionsBox = document.querySelector('.actions');
-        const flightGrid = document.getElementById('flightGrid');
-        const detailsGrid = document.getElementById('detailsGrid');
-
-        speechBtns.forEach(btn => btn.style.display = 'none');
-        actionsBox.style.display = 'none';
-
-        const originalWidth = card.style.width;
-        card.style.width = '1000px';
-        flightGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
-        detailsGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
-
-        html2canvas(card, {
-            scale: 2,
-            useCORS: true,
-            windowWidth: 1200,
-            backgroundColor: '#ffffff'
-        }).then(canvas => {
-            card.style.width = originalWidth;
-            flightGrid.style.gridTemplateColumns = '';
-            detailsGrid.style.gridTemplateColumns = '';
-            speechBtns.forEach(btn => btn.style.display = 'flex');
-            actionsBox.style.display = 'flex';
-
-            const name = document.getElementById('fullName').value || 'תלמיד';
-            const link = document.createElement('a');
-            link.download = `תלא_${name}.png`.replace(/\s+/g, '_');
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-
-            status.style.color = '#10b981';
-            status.innerText = '🖼️ התמונה המעוצבת נשמרה בגלריית המכשיר! כעת נכנסים ל-WhatsApp ושולחים אותה למורה.';
-        }).catch(err => {
-            card.style.width = originalWidth;
-            flightGrid.style.gridTemplateColumns = '';
-            detailsGrid.style.gridTemplateColumns = '';
-            speechBtns.forEach(btn => btn.style.display = 'flex');
-            actionsBox.style.display = 'flex';
-            status.style.color = '#ef4444';
-            status.innerText = 'שגיאה ביצירת התמונה: ' + err.message;
-        });
-    }
-
-    function resetForm() {
-        if (confirm('האם למחוק את כל התשובות מהמסך ולהתחיל טופס חדש?')) {
-            fields.forEach(id => {
-                const el = document.getElementById(id);
-                el.value = '';
-                localStorage.removeItem('tala_' + id);
-            });
-            document.getElementById('date').value = getTodayIsraeliDate();
-            localStorage.setItem('tala_date', getTodayIsraeliDate());
-            lockActions();
-            const status = document.getElementById('statusMsg');
-            status.style.color = '#f59e0b';
-            status.innerText = '🧹 הטופס נוקה בהצלחה! יש למלא ולשמור לפני הורדת תמונה.';
-        }
-    }
-
-    let currentRecognition = null;
-    let currentBtn = null;
-
-    function toggleSpeech(fieldId, btn) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-            alert('הדפדפן במכשיר זה אינו תומך בזיהוי קולי. מומלץ להשתמש בדפדפן Chrome.');
-            return;
-        }
-
-        if (currentRecognition) {
-            currentRecognition.stop();
-            return;
-        }
-
-        const field = document.getElementById(fieldId);
-        const initialText = field.value;
-
-        currentRecognition = new SpeechRecognition();
-        currentRecognition.lang = 'he-IL';
-        currentRecognition.continuous = true;
-        currentRecognition.interimResults = true;
-
-        currentBtn = btn;
-        btn.classList.add('recording');
-        btn.innerHTML = '<i class="fa-solid fa-stop"></i> לחץ לסיום הקלטה';
-
-        currentRecognition.onresult = function(event) {
-            let finalTranscript = '';
-            for (let i = event.resultIndex; i < event.results.length; ++i) {
-                if (event.results[i].isFinal) {
-                    finalTranscript += event.results[i][0].transcript;
-                }
-            }
-            if (finalTranscript) {
-                field.value = initialText + (initialText ? ' ' : '') + finalTranscript;
-                field.dispatchEvent(new Event('input'));
-            }
-        };
-
-        currentRecognition.onerror = function(event) {
-            console.error("Speech recognition error:", event.error);
-            stopSpeech();
-        };
-
-        currentRecognition.onend = function() {
-            stopSpeech();
-        };
-
-        try {
-            currentRecognition.start();
-        } catch (e) {
-            stopSpeech();
-        }
-    }
-
-    function stopSpeech() {
-        if (currentBtn) {
-            currentBtn.classList.remove('recording');
-            currentBtn.innerHTML = '<i class="fa-solid fa-microphone"></i> הקלט תשובה';
-        }
-        currentRecognition = null;
-        currentBtn = null;
-    }
-</script>
-
-</body>
-</html>
+                    <textarea id="dreams" placeholder="מה ה
