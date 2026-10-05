@@ -6,7 +6,6 @@
     <title>תכנית לימודים אישית - המסע שלי</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <!-- ספרייה להמרת המסך לתמונה בגלרייה -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
@@ -40,7 +39,6 @@
             position: relative;
         }
 
-        /* כותרת מרוכזת */
         .top-banner {
             text-align: center;
             margin-bottom: 20px;
@@ -59,7 +57,6 @@
             margin-bottom: 15px;
         }
 
-        /* תיבת פרטים אישיים */
         .personal-details-box {
             background: #fff;
             border: 2px solid #38bdf8;
@@ -72,9 +69,13 @@
 
         .details-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             text-align: right;
+        }
+
+        @media (max-width: 600px) {
+            .details-grid { grid-template-columns: 1fr; }
         }
 
         .details-grid label {
@@ -94,7 +95,6 @@
             font-family: inherit;
         }
 
-        /* גריד 3 עמודות */
         .flight-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -200,7 +200,6 @@
             100% { opacity: 1; }
         }
 
-        /* חתימות בתחתית */
         .signatures {
             margin-top: 35px;
             border-top: 2px dashed #93c5fd;
@@ -224,7 +223,6 @@
             border-top: 2px solid #475569;
         }
 
-        /* כפתורי פעולה */
         .actions {
             margin-top: 30px;
             display: flex;
@@ -278,7 +276,7 @@
         </div>
         
         <div class="personal-details-box">
-            <div class="details-grid">
+            <div class="details-grid" id="detailsGrid">
                 <div>
                     <label>שם מלא:</label>
                     <input type="text" id="fullName" placeholder="שם פרטי ומשפחה">
@@ -296,7 +294,7 @@
     </div>
 
     <form id="talaForm">
-        <div class="flight-grid">
+        <div class="flight-grid" id="flightGrid">
             
             <div class="flight-column">
                 <div class="col-header">
@@ -382,8 +380,8 @@
             <button type="button" class="btn btn-submit" onclick="sendToGoogleSheets()">
                 <i class="fa-solid fa-paper-plane"></i> 1. שמור ושגר לגיליון
             </button>
-            <button type="button" id="btnImage" class="btn btn-image" onclick="downloadAsImage()" disabled title="יש לשמור תחילה את הנתונים בגיליון">
-                <i class="fa-solid fa-image"></i> 2. הורד תמונה לגלרייה
+            <button type="button" id="btnImage" class="btn btn-image" onclick="downloadAsA4Image()" disabled title="יש לשמור תחילה את הנתונים בגיליון">
+                <i class="fa-solid fa-image"></i> 2. הורד תמונה לגלרייה (A4)
             </button>
             <button type="button" class="btn btn-reset" onclick="resetForm()">
                 <i class="fa-solid fa-rotate-right"></i> טופס חדש
@@ -431,7 +429,7 @@
 
         const status = document.getElementById('statusMsg');
         status.style.color = '#0284c7';
-        status.innerText = '✈️️ שולח נתונים לגיליון... אנא המתן';
+        status.innerText = '✈️ שולח נתונים לגיליון... אנא המתן';
 
         const payload = {
             fullName: fullName,
@@ -463,26 +461,38 @@
         });
     }
 
-    // פונקציית צילום המסך והורדת תמונת PNG יחידה לגלרייה
-    function downloadAsImage() {
+    // פונקציית יצירת תמונת A4 מעוצבת ברוחב מלא (ללא קטיעה)
+    function downloadAsA4Image() {
         const status = document.getElementById('statusMsg');
         status.style.color = '#0284c7';
-        status.innerText = '📸 מייצר תמונה מעוצבת... אנא המתן';
+        status.innerText = '📸 מייצר תמונה מעוצבת בפורמט A4... אנא המתן';
 
         const card = document.getElementById('talaCard');
         const speechBtns = document.querySelectorAll('.speech-btn');
         const actionsBox = document.querySelector('.actions');
+        const flightGrid = document.getElementById('flightGrid');
+        const detailsGrid = document.getElementById('detailsGrid');
 
-        // הסתרת הכפתורים באופן זמני כדי שלא יופיעו בתמונה המעוצבת
+        // הסתרת הכפתורים באופן זמני
         speechBtns.forEach(btn => btn.style.display = 'none');
         actionsBox.style.display = 'none';
 
+        // כפיית רווח מעוצב של 3 עמודות רחבות לפורמט A4 בולט
+        const originalWidth = card.style.width;
+        card.style.width = '1000px';
+        flightGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+        detailsGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+
         html2canvas(card, {
-            scale: 2, // איכות גבוהה
+            scale: 2,
             useCORS: true,
-            backgroundColor: '#bae6fd'
+            windowWidth: 1200,
+            backgroundColor: '#ffffff'
         }).then(canvas => {
-            // החזרת הכפתורים למסך
+            // החזרת העיצוב למסך הנייד
+            card.style.width = originalWidth;
+            flightGrid.style.gridTemplateColumns = '';
+            detailsGrid.style.gridTemplateColumns = '';
             speechBtns.forEach(btn => btn.style.display = 'flex');
             actionsBox.style.display = 'flex';
 
@@ -493,8 +503,11 @@
             link.click();
 
             status.style.color = '#10b981';
-            status.innerText = '🖼️ התמונה נשמרה בגלריית המכשיר! כעת נכנסים ל-WhatsApp ושולחים אותה למורה.';
+            status.innerText = '🖼️ התמונה המעוצבת נשמרו בגלריית המכשיר! כעת נכנסים ל-WhatsApp ושולחים אותה למורה.';
         }).catch(err => {
+            card.style.width = originalWidth;
+            flightGrid.style.gridTemplateColumns = '';
+            detailsGrid.style.gridTemplateColumns = '';
             speechBtns.forEach(btn => btn.style.display = 'flex');
             actionsBox.style.display = 'flex';
             status.style.color = '#ef4444';
