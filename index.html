@@ -248,6 +248,9 @@
         .btn-submit { background: #10b981; color: white; }
         .btn-submit:hover { background: #059669; }
 
+        .btn-whatsapp { background: #25d366; color: white; }
+        .btn-whatsapp:hover { background: #1da851; }
+
         .btn-pdf { background: #0284c7; color: white; }
         .btn-pdf:hover { background: #0369a1; }
 
@@ -387,13 +390,16 @@
 
         <div class="actions">
             <button type="button" class="btn btn-submit" onclick="sendToGoogleSheets()">
-                <i class="fa-solid fa-paper-plane"></i> שמור ושגר לגיליון המרכזי
+                <i class="fa-solid fa-paper-plane"></i> שמור ושגר לגיליון
+            </button>
+            <button type="button" class="btn btn-whatsapp" onclick="shareViaWhatsApp()">
+                <i class="fa-brands fa-whatsapp"></i> שתף ב-WhatsApp
             </button>
             <button type="button" class="btn btn-pdf" onclick="window.print()">
                 <i class="fa-solid fa-file-pdf"></i> הדפס / שמור כ-PDF
             </button>
             <button type="button" class="btn btn-reset" onclick="resetForm()">
-                <i class="fa-solid fa-rotate-right"></i> טופס חדש / נקה הכל
+                <i class="fa-solid fa-rotate-right"></i> טופס חדש
             </button>
         </div>
         <div id="statusMsg"></div>
@@ -401,7 +407,7 @@
 </div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPU82tW5cezzZytt22bHwDgJ63OW6OwyjtvCo04H1SIwd1LaMg9ykC2-jZ1r7jDWGm0Q/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyPsVFHyRzHgLtlnTy7WbN31m8P2mgbA3_-Z3WjkQs34_ShKuhJOMZQzwB8U9yPFBj8g/exec";
 
     document.getElementById('date').valueAsDate = new Date();
 
@@ -417,7 +423,34 @@
         });
     });
 
-    // פונקציית איפוס טופס ואיפוס הזיכרון המקומי
+    // פונקציית שיתוף ב-WhatsApp עם כל פרטי הטופס
+    function shareViaWhatsApp() {
+        const name = document.getElementById('fullName').value || 'ללא שם';
+        const grade = document.getElementById('grade').value || '-';
+        const date = document.getElementById('date').value || '-';
+        
+        let text = `✨ *תכנית לימודים אישית (תל"א) - המסע שלי* ✨\n\n`;
+        text += `👤 *שם התלמיד/ה:* ${name}\n`;
+        text += `🏫 *כיתה:* ${grade}\n`;
+        text += `📅 *תאריך:* ${date}\n\n`;
+        
+        text += `🛣️ *המסע שלי:*\n`;
+        text += `💭 *חלומות:* ${document.getElementById('dreams').value || '-'}\n`;
+        text += `💪 *חוזקות:* ${document.getElementById('strengths').value || '-'}\n`;
+        text += `🚧 *מעכבים:* ${document.getElementById('challenges').value || '-'}\n\n`;
+        
+        text += `🎯 *המטרות שלי:*\n`;
+        text += `📚 *תחום לימודי:* ${document.getElementById('academicGoals').value || '-'}\n`;
+        text += `🤝 *תחום חברתי:* ${document.getElementById('socialGoals').value || '-'}\n`;
+        text += `❤️ *מטרות אישיות:* ${document.getElementById('personalGoals').value || '-'}\n\n`;
+        
+        text += `🗺️ *דרך הפעולה:*\n`;
+        text += `🚀 *איך אשיג את המטרות:* ${document.getElementById('howToAchieve').value || '-'}\n`;
+
+        const encodedText = encodeURIComponent(text);
+        window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
+    }
+
     function resetForm() {
         if (confirm('האם למחוק את כל התשובות מהמסך ולהתחיל טופס חדש?')) {
             fields.forEach(id => {
