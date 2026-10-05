@@ -6,6 +6,8 @@
     <title>תכנית לימודים אישית - המסע שלי</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- ספרייה להמרת המסך לתמונה בגלרייה -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --sky-bg: #e0f2fe;
@@ -248,8 +250,8 @@
         .btn-submit { background: #10b981; color: white; }
         .btn-submit:hover { background: #059669; }
 
-        .btn-pdf { background: #0284c7; color: white; }
-        .btn-pdf:hover { background: #0369a1; }
+        .btn-image { background: #0284c7; color: white; }
+        .btn-image:hover { background: #0369a1; }
 
         .btn-reset { background: #f59e0b; color: white; }
         .btn-reset:hover { background: #d97706; }
@@ -263,111 +265,11 @@
         }
 
         #statusMsg { text-align: center; margin-top: 15px; font-weight: bold; }
-
-        /* הגדרות הדפסה ל-A4 יחיד */
-        @page { size: A4 portrait; margin: 5mm; }
-
-        @media print {
-            html, body {
-                height: 100%;
-                background: white !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                overflow: hidden;
-            }
-
-            .container {
-                box-shadow: none !important;
-                border: 2px solid #38bdf8 !important;
-                padding: 12px !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                border-radius: 12px !important;
-            }
-
-            .actions, .speech-btn, #statusMsg { display: none !important; }
-
-            .top-banner {
-                margin-bottom: 10px !important;
-                padding-bottom: 10px !important;
-            }
-
-            .main-title {
-                font-size: 24px !important;
-                margin-bottom: 8px !important;
-            }
-
-            .personal-details-box {
-                padding: 8px 15px !important;
-            }
-
-            .details-grid label {
-                font-size: 12px !important;
-                margin-bottom: 2px !important;
-            }
-
-            .details-grid input {
-                padding: 4px 8px !important;
-                font-size: 13px !important;
-            }
-
-            .flight-grid {
-                display: grid !important;
-                grid-template-columns: repeat(3, 1fr) !important;
-                gap: 10px !important;
-                margin-top: 10px !important;
-            }
-
-            .flight-column {
-                padding: 10px !important;
-                gap: 8px !important;
-                border-radius: 12px !important;
-            }
-
-            .col-header {
-                font-size: 16px !important;
-                padding-bottom: 6px !important;
-            }
-
-            label {
-                font-size: 12px !important;
-            }
-
-            .visual-icon {
-                font-size: 15px !important;
-            }
-
-            textarea {
-                min-height: 65px !important;
-                font-size: 12px !important;
-                padding: 6px !important;
-                border-radius: 6px !important;
-            }
-
-            #howToAchieve {
-                min-height: 220px !important;
-            }
-
-            .signatures {
-                margin-top: 15px !important;
-                padding-top: 10px !important;
-                gap: 10px !important;
-            }
-
-            .sig-box {
-                padding: 8px !important;
-                font-size: 12px !important;
-            }
-
-            .sig-line {
-                margin-top: 25px !important;
-            }
-        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="talaCard">
     
     <div class="top-banner">
         <div class="main-title">
@@ -480,14 +382,14 @@
             <button type="button" class="btn btn-submit" onclick="sendToGoogleSheets()">
                 <i class="fa-solid fa-paper-plane"></i> 1. שמור ושגר לגיליון
             </button>
-            <button type="button" id="btnPdf" class="btn btn-pdf" onclick="window.print()" disabled title="יש לשמור תחילה את הנתונים בגיליון">
-                <i class="fa-solid fa-file-pdf"></i> 2. הדפס / שמור כ-PDF
+            <button type="button" id="btnImage" class="btn btn-image" onclick="downloadAsImage()" disabled title="יש לשמור תחילה את הנתונים בגיליון">
+                <i class="fa-solid fa-image"></i> 2. הורד תמונה לגלרייה
             </button>
             <button type="button" class="btn btn-reset" onclick="resetForm()">
                 <i class="fa-solid fa-rotate-right"></i> טופס חדש
             </button>
         </div>
-        <div id="statusMsg">⚠️ יש ללחוץ על "שמור ושגר לגיליון" לפני שניתן להדפיס או לשמור כ-PDF.</div>
+        <div id="statusMsg">⚠️ יש ללחוץ על "שמור ושגר לגיליון" לפני שניתן להוריד את התמונה.</div>
     </form>
 </div>
 
@@ -510,14 +412,14 @@
     });
 
     function lockActions() {
-        document.getElementById('btnPdf').disabled = true;
+        document.getElementById('btnImage').disabled = true;
         const status = document.getElementById('statusMsg');
         status.style.color = '#d97706';
-        status.innerText = '⚠️ בוצעו שינויים - יש ללחוץ על "1. שמור ושגר לגיליון" כדי לאפשר הדפסה/שמירה כ-PDF.';
+        status.innerText = '⚠️ בוצעו שינויים - יש ללחוץ על "1. שמור ושגר לגיליון" כדי לאפשר הורדת תמונה.';
     }
 
     function unlockActions() {
-        document.getElementById('btnPdf').disabled = false;
+        document.getElementById('btnImage').disabled = false;
     }
 
     function sendToGoogleSheets() {
@@ -529,7 +431,7 @@
 
         const status = document.getElementById('statusMsg');
         status.style.color = '#0284c7';
-        status.innerText = '✈️ שולח נתונים לגיליון... אנא המתן';
+        status.innerText = '✈️️ שולח נתונים לגיליון... אנא המתן';
 
         const payload = {
             fullName: fullName,
@@ -552,12 +454,51 @@
         })
         .then(() => {
             status.style.color = '#10b981';
-            status.innerText = '🎉 הנתונים נשמרו בגיליון! כעת לחץ על "2. הדפס / שמור כ-PDF" כדי לשמור את הקובץ ולשלוח למורה.';
+            status.innerText = '🎉 הנתונים נשמרו בגיליון! כעת לחץ על "2. הורד תמונה לגלרייה" כדי לשמור את התמונה ולשלוח למורה ב-WhatsApp.';
             unlockActions();
         })
         .catch(err => {
             status.style.color = '#ef4444';
             status.innerText = 'שגיאה בשליחת הנתונים: ' + err.message;
+        });
+    }
+
+    // פונקציית צילום המסך והורדת תמונת PNG יחידה לגלרייה
+    function downloadAsImage() {
+        const status = document.getElementById('statusMsg');
+        status.style.color = '#0284c7';
+        status.innerText = '📸 מייצר תמונה מעוצבת... אנא המתן';
+
+        const card = document.getElementById('talaCard');
+        const speechBtns = document.querySelectorAll('.speech-btn');
+        const actionsBox = document.querySelector('.actions');
+
+        // הסתרת הכפתורים באופן זמני כדי שלא יופיעו בתמונה המעוצבת
+        speechBtns.forEach(btn => btn.style.display = 'none');
+        actionsBox.style.display = 'none';
+
+        html2canvas(card, {
+            scale: 2, // איכות גבוהה
+            useCORS: true,
+            backgroundColor: '#bae6fd'
+        }).then(canvas => {
+            // החזרת הכפתורים למסך
+            speechBtns.forEach(btn => btn.style.display = 'flex');
+            actionsBox.style.display = 'flex';
+
+            const name = document.getElementById('fullName').value || 'תלמיד';
+            const link = document.createElement('a');
+            link.download = `תלא_${name}.png`.replace(/\s+/g, '_');
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+
+            status.style.color = '#10b981';
+            status.innerText = '🖼️ התמונה נשמרה בגלריית המכשיר! כעת נכנסים ל-WhatsApp ושולחים אותה למורה.';
+        }).catch(err => {
+            speechBtns.forEach(btn => btn.style.display = 'flex');
+            actionsBox.style.display = 'flex';
+            status.style.color = '#ef4444';
+            status.innerText = 'שגיאה ביצירת התמונה: ' + err.message;
         });
     }
 
@@ -572,7 +513,7 @@
             lockActions();
             const status = document.getElementById('statusMsg');
             status.style.color = '#f59e0b';
-            status.innerText = '🧹 הטופס נוקה בהצלחה! יש למלא ולשמור לפני הדפסה.';
+            status.innerText = '🧹 הטופס נוקה בהצלחה! יש למלא ולשמור לפני הורדת תמונה.';
         }
     }
 
