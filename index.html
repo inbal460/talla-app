@@ -6,6 +6,8 @@
     <title>תכנית לימודים אישית - המסע שלי</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- ספרייה ליצירת קובץ PDF בדפדפן -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --sky-bg: #e0f2fe;
@@ -257,6 +259,15 @@
         .btn-reset { background: #f59e0b; color: white; }
         .btn-reset:hover { background: #d97706; }
 
+        /* עיצוב כפתורים נעולים עד לשמירה */
+        .btn:disabled {
+            background: #cbd5e1 !important;
+            color: #64748b !important;
+            cursor: not-allowed !important;
+            box-shadow: none !important;
+            opacity: 0.7;
+        }
+
         #statusMsg { text-align: center; margin-top: 15px; font-weight: bold; }
 
         /* הגדרות הדפסה ל-A4 */
@@ -279,7 +290,7 @@
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="pdfContent">
     
     <div class="top-banner">
         <div class="main-title">
@@ -392,17 +403,17 @@
             <button type="button" class="btn btn-submit" onclick="sendToGoogleSheets()">
                 <i class="fa-solid fa-paper-plane"></i> שמור ושגר לגיליון
             </button>
-            <button type="button" class="btn btn-whatsapp" onclick="shareViaWhatsApp()">
-                <i class="fa-brands fa-whatsapp"></i> שתף ב-WhatsApp
+            <button type="button" id="btnWhatsapp" class="btn btn-whatsapp" onclick="sharePdfViaWhatsApp()" disabled title="יש לשמור תחילה את הנתונים בגיליון">
+                <i class="fa-brands fa-whatsapp"></i> שתף קובץ PDF ב-WhatsApp
             </button>
-            <button type="button" class="btn btn-pdf" onclick="window.print()">
+            <button type="button" id="btnPdf" class="btn btn-pdf" onclick="window.print()" disabled title="יש לשמור תחילה את הנתונים בגיליון">
                 <i class="fa-solid fa-file-pdf"></i> הדפס / שמור כ-PDF
             </button>
             <button type="button" class="btn btn-reset" onclick="resetForm()">
                 <i class="fa-solid fa-rotate-right"></i> טופס חדש
             </button>
         </div>
-        <div id="statusMsg"></div>
+        <div id="statusMsg">⚠️ יש ללחוץ על "שמור ושגר לגיליון" לפני שניתן להדפיס או לשתף.</div>
     </form>
 </div>
 
@@ -420,35 +431,109 @@
         
         el.addEventListener('input', () => {
             localStorage.setItem('tala_' + id, el.value);
+            // אם התלמיד משנה טקסט לאחר שמשמר, דורשים שמירה מחדש
+            lockActions();
         });
     });
 
-    // פונקציית שיתוף ב-WhatsApp עם כל פרטי הטופס
-    function shareViaWhatsApp() {
-        const name = document.getElementById('fullName').value || 'ללא שם';
-        const grade = document.getElementById('grade').value || '-';
-        const date = document.getElementById('date').value || '-';
-        
-        let text = `✨ *תכנית לימודים אישית (תל"א) - המסע שלי* ✨\n\n`;
-        text += `👤 *שם התלמיד/ה:* ${name}\n`;
-        text += `🏫 *כיתה:* ${grade}\n`;
-        text += `📅 *תאריך:* ${date}\n\n`;
-        
-        text += `🛣️ *המסע שלי:*\n`;
-        text += `💭 *חלומות:* ${document.getElementById('dreams').value || '-'}\n`;
-        text += `💪 *חוזקות:* ${document.getElementById('strengths').value || '-'}\n`;
-        text += `🚧 *מעכבים:* ${document.getElementById('challenges').value || '-'}\n\n`;
-        
-        text += `🎯 *המטרות שלי:*\n`;
-        text += `📚 *תחום לימודי:* ${document.getElementById('academicGoals').value || '-'}\n`;
-        text += `🤝 *תחום חברתי:* ${document.getElementById('socialGoals').value || '-'}\n`;
-        text += `❤️ *מטרות אישיות:* ${document.getElementById('personalGoals').value || '-'}\n\n`;
-        
-        text += `🗺️ *דרך הפעולה:*\n`;
-        text += `🚀 *איך אשיג את המטרות:* ${document.getElementById('howToAchieve').value || '-'}\n`;
+    function lockActions() {
+        document.getElementById('btnWhatsapp').disabled = true;
+        document.getElementById('btnPdf').disabled = true;
+        const status = document.getElementById('statusMsg');
+        status.style.color = '#d97706';
+        status.innerText = '⚠️ בוצעו שינויים - יש ללחוץ על "שמור ושגר לגיליון" כדי לאפשר הדפסה/שיתוף.';
+    }
 
-        const encodedText = encodeURIComponent(text);
-        window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
+    function unlockActions() {
+        document.getElementById('btnWhatsapp').disabled = false;
+        document.getElementById('btnPdf').disabled = false;
+    }
+
+    function sendToGoogleSheets() {
+        const fullName = document.getElementById('fullName').value.trim();
+        if (!fullName) {
+            alert('אנא הזן שם מלא לפני השמירה.');
+            return;
+        }
+
+        const status = document.getElementById('statusMsg');
+        status.style.color = '#0284c7';
+        status.innerText = '✈️ שולח נתונים לגיליון... אנא המתן';
+
+        const payload = {
+            fullName: fullName,
+            grade: document.getElementById('grade').value,
+            date: document.getElementById('date').value,
+            dreams: document.getElementById('dreams').value,
+            strengths: document.getElementById('strengths').value,
+            challenges: document.getElementById('challenges').value,
+            academicGoals: document.getElementById('academicGoals').value,
+            socialGoals: document.getElementById('socialGoals').value,
+            personalGoals: document.getElementById('personalGoals').value,
+            howToAchieve: document.getElementById('howToAchieve').value
+        };
+
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(() => {
+            status.style.color = '#10b981';
+            status.innerText = '🎉 הנתונים נשמרו בהצלחה בגיליון! כעת ניתן להדפיס או לשתף ב-WhatsApp.';
+            unlockActions();
+        })
+        .catch(err => {
+            status.style.color = '#ef4444';
+            status.innerText = 'שגיאה בשליחת הנתונים: ' + err.message;
+        });
+    }
+
+    // פונקציית יצירת PDF ושיתוף הקובץ ב-WhatsApp
+    async function sharePdfViaWhatsApp() {
+        const name = document.getElementById('fullName').value || 'תלמיד';
+        const fileName = `תלא_${name}.pdf`.replace(/\s+/g, '_');
+        const status = document.getElementById('statusMsg');
+        
+        status.style.color = '#0284c7';
+        status.innerText = '📄 מכין קובץ PDF לשיתוף...';
+
+        const element = document.getElementById('pdfContent');
+        const opt = {
+            margin: 5,
+            filename: fileName,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        try {
+            // יצירת קובץ ה-PDF בזיכרון
+            const pdfBlob = await html2pdf().set(opt).from(element).output('blob');
+            const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
+
+            // בדיקה אם הדפדפן/טלפון תומך בשיתוף קבצים ישיר (Web Share API)
+            if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+                await navigator.share({
+                    files: [pdfFile],
+                    title: `תל"א - ${name}`,
+                    text: `שלום מורה, מצורף קובץ PDF של תכנית הלימודים האישית (תל"א) שלי!`
+                });
+                status.style.color = '#10b981';
+                status.innerText = '✅ הקובץ הועבר לשיתוף!';
+            } else {
+                // מנגנון גיבוי במידה והשיתוף הישיר אינו נתמך (למשל במחשב נייח): הורדת ה-PDF והודעת הסבר
+                html2pdf().set(opt).from(element).save();
+                alert('קובץ ה-PDF ירד למכשירך! כעת ניתן לצרף אותו כקובץ ב-WhatsApp.');
+                status.style.color = '#10b981';
+                status.innerText = '⬇️ הקובץ הורד למכשיר.';
+            }
+        } catch (error) {
+            console.error('Error sharing PDF:', error);
+            status.style.color = '#ef4444';
+            status.innerText = 'שגיאה ביצירת קובץ ה-PDF לשיתוף.';
+        }
     }
 
     function resetForm() {
@@ -459,9 +544,10 @@
                 localStorage.removeItem('tala_' + id);
             });
             document.getElementById('date').valueAsDate = new Date();
+            lockActions();
             const status = document.getElementById('statusMsg');
             status.style.color = '#f59e0b';
-            status.innerText = '🧹 הטופס נוקה בהצלחה! מוכן לתלמיד/ה הבא/ה.';
+            status.innerText = '🧹 הטופס נוקה בהצלחה! יש למלא ולשמור לפני שיתוף.';
         }
     }
 
@@ -528,40 +614,6 @@
         }
         currentRecognition = null;
         currentBtn = null;
-    }
-
-    function sendToGoogleSheets() {
-        const status = document.getElementById('statusMsg');
-        status.style.color = '#0284c7';
-        status.innerText = '✈️ שולח נתונים לגיליון... אנא המתן';
-
-        const payload = {
-            fullName: document.getElementById('fullName').value,
-            grade: document.getElementById('grade').value,
-            date: document.getElementById('date').value,
-            dreams: document.getElementById('dreams').value,
-            strengths: document.getElementById('strengths').value,
-            challenges: document.getElementById('challenges').value,
-            academicGoals: document.getElementById('academicGoals').value,
-            socialGoals: document.getElementById('socialGoals').value,
-            personalGoals: document.getElementById('personalGoals').value,
-            howToAchieve: document.getElementById('howToAchieve').value
-        };
-
-        fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
-        .then(() => {
-            status.style.color = '#10b981';
-            status.innerText = '🎉 הנתונים נשמרו בהצלחה בגיליון ה-Google Sheets המרכזי!';
-        })
-        .catch(err => {
-            status.style.color = '#ef4444';
-            status.innerText = 'שגיאה בשליחת הנתונים: ' + err.message;
-        });
     }
 </script>
 
