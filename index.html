@@ -3,116 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>תל"א - תכנית לימודים אישית</title>
+    <title>תכנית לימודים אישית - המסע שלי</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --primary: #0284c7;
-            --primary-dark: #0369a1;
-            --primary-light: #e0f2fe;
-            --accent: #0f172a;
-            --border-color: #cbd5e1;
-            --tala-color: #0284c7;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
+            --sky-bg: #e0f2fe;
+            --primary-blue: #0284c7;
+            --card-border: #38bdf8;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --tala-color: #0284c7; /* טורקיז-כחול לאותיות ת.ל.א */
         }
 
         * { box-sizing: border-box; }
 
         body {
-            font-family: 'Heebo', 'Rubik', sans-serif;
-            background-color: #ffffff;
-            color: var(--text-main);
+            font-family: 'Rubik', sans-serif;
+            background: #ffffff;
+            color: var(--text);
             margin: 0;
-            padding: 25px 15px;
+            padding: 20px 10px;
             direction: rtl;
             min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
         }
 
         .container {
             max-width: 1050px;
             margin: 0 auto;
             background: #ffffff;
-            border-radius: 20px;
-            padding: 30px;
-            border: 2px solid #bae6fd;
-            box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.08);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(2, 132, 199, 0.08);
+            padding: 25px;
+            border: 3px solid #38bdf8;
             position: relative;
             text-align: right;
         }
 
-        /* כותרת עם לוגו והדגשת ת.ל.א */
         .top-banner {
-            position: relative;
-            margin-bottom: 25px;
-            border-bottom: 2px dashed #bae6fd;
-            padding-bottom: 22px;
-        }
-
-        .logo-header-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
+            text-align: center;
             margin-bottom: 20px;
-        }
-
-        .header-logo-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 16px;
-            object-fit: cover;
-            border: 2px solid #38bdf8;
-            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.15);
+            border-bottom: 3px dashed #7dd3fc;
+            padding-bottom: 20px;
         }
 
         .main-title {
             font-size: 32px;
-            font-weight: 900;
-            color: var(--accent);
-            margin: 0;
-            letter-spacing: -0.5px;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 18px;
         }
 
-        /* עיצוב צבעוני מודגש לאותיות ת.ל.א */
+        /* אותיות ת.ל.א בצבע טורקיז-כחול ללא עיבוי או רקע */
         .tala-letter {
             color: var(--tala-color);
-            background: #e0f2fe;
-            padding: 2px 8px;
-            border-radius: 8px;
-            border: 1px solid #7dd3fc;
-            font-size: 34px;
-            display: inline-block;
+            font-weight: 800;
         }
 
-        /* מלבן פרטים אישיים - מתוח ברוחב מלא ועם צבע חי */
+        /* מלבן פרטים אישיים ברוחב מלא עם צבע בולט וחי */
         .personal-details-box {
-            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
-            border: 2px solid #38bdf8;
+            background: #e0f2fe;
+            border: 2px solid #0284c7;
             border-radius: 16px;
             padding: 18px 22px;
             width: 100%;
-            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.12);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12);
         }
 
         .details-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 18px;
             text-align: right;
             width: 100%;
         }
 
-        @media (max-width: 650px) {
+        @media (max-width: 600px) {
             .details-grid { grid-template-columns: 1fr; }
         }
 
         .details-grid label {
             font-size: 14px;
-            font-weight: 800;
+            font-weight: 700;
             color: #0369a1;
             display: block;
             margin-bottom: 6px;
@@ -120,24 +97,15 @@
         }
 
         .details-grid input {
-            padding: 11px 14px;
-            border: 2px solid #93c5fd;
-            border-radius: 10px;
+            padding: 10px 14px;
+            border: 2px solid #38bdf8;
+            border-radius: 8px;
             font-size: 15px;
-            font-weight: 600;
             width: 100%;
             font-family: inherit;
             background: #ffffff;
-            color: var(--text-main);
-            transition: all 0.2s ease;
             text-align: right;
             direction: rtl;
-        }
-
-        .details-grid input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
         }
 
         #date {
@@ -145,11 +113,10 @@
             text-align: center !important;
         }
 
-        /* גריד 3 עמודות מעוצב */
         .flight-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 22px;
+            gap: 20px;
             margin-top: 25px;
             width: 100%;
         }
@@ -160,23 +127,23 @@
 
         .flight-column {
             background: #ffffff;
-            border: 2px solid #7dd3fc;
-            border-radius: 18px;
+            border: 3px solid #38bdf8;
+            border-radius: 20px;
             padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 18px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.03);
             position: relative;
             text-align: right;
         }
 
         .col-header {
-            font-size: 21px;
+            font-size: 22px;
             font-weight: 800;
-            color: var(--primary-dark);
+            color: #0369a1;
             text-align: center;
-            border-bottom: 2px solid #f1f5f9;
+            border-bottom: 2px solid #bae6fd;
             padding-bottom: 12px;
             display: flex;
             align-items: center;
@@ -192,8 +159,8 @@
         }
 
         label {
-            font-weight: 800;
-            font-size: 15px;
+            font-weight: 700;
+            font-size: 16px;
             color: #1e293b;
             display: flex;
             align-items: center;
@@ -209,7 +176,7 @@
 
         textarea {
             width: 100%;
-            padding: 12px 14px;
+            padding: 12px;
             border: 2px solid #cbd5e1;
             border-radius: 12px;
             font-family: inherit;
@@ -217,28 +184,26 @@
             resize: vertical;
             min-height: 110px;
             background: #ffffff;
-            color: var(--text-main);
-            line-height: 1.6;
+            line-height: 1.5;
             text-align: right;
             direction: rtl;
-            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         textarea:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: #0284c7;
             box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
         }
 
         .speech-btn {
-            background: #f0f9ff;
+            background: #e0f2fe;
             color: #0284c7;
-            border: 1px solid #bae6fd;
+            border: 1px solid #7dd3fc;
             border-radius: 8px;
-            padding: 7px 12px;
+            padding: 8px 14px;
             cursor: pointer;
-            font-size: 13px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: bold;
             align-self: flex-start;
             margin-top: 2px;
             display: flex;
@@ -247,27 +212,21 @@
             transition: all 0.2s;
         }
 
-        .speech-btn:hover {
-            background: #e0f2fe;
-        }
-
         .speech-btn.recording {
             background: #ef4444 !important;
             color: white !important;
-            border-color: #dc2626 !important;
             animation: pulse 1.2s infinite;
         }
 
         @keyframes pulse {
             0% { opacity: 1; }
-            50% { opacity: 0.65; }
+            50% { opacity: 0.6; }
             100% { opacity: 1; }
         }
 
-        /* חתימות להדפסה */
         .signatures {
             margin-top: 35px;
-            border-top: 2px dashed #bae6fd;
+            border-top: 2px dashed #7dd3fc;
             padding-top: 25px;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -277,20 +236,17 @@
 
         .sig-box {
             background: #ffffff;
-            padding: 16px 12px;
-            border-radius: 12px;
-            border: 1px solid #cbd5e1;
+            padding: 18px 12px;
+            border-radius: 14px;
+            border: 2px solid #cbd5e1;
             font-size: 15px;
-            font-weight: 700;
-            color: #334155;
         }
 
         .sig-line {
-            margin-top: 40px;
-            border-top: 2px solid #64748b;
+            margin-top: 45px;
+            border-top: 2px solid #475569;
         }
 
-        /* כפתורי פעולה */
         .actions {
             margin-top: 30px;
             display: flex;
@@ -300,85 +256,17 @@
         }
 
         .btn {
-            padding: 13px 28px;
+            padding: 14px 28px;
             border: none;
             border-radius: 50px;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 800;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.2s;
         }
 
-        .btn-submit { background: #059669; color: white; }
-        .btn-submit:hover { background: #047857; transform: translateY(-1px); }
-
-        .btn-image { background: #0284c7; color: white; }
-        .btn-image:hover { background: #0369a1; transform: translateY(-1px); }
-
-        .btn-reset { background: #d97706; color: white; }
-        .btn-reset:hover { background: #b45309; transform: translateY(-1px); }
-
-        .btn:disabled {
-            background: #cbd5e1 !important;
-            color: #64748b !important;
-            cursor: not-allowed !important;
-            box-shadow: none !important;
-            transform: none !important;
-            opacity: 0.75;
-        }
-
-        #statusMsg {
-            text-align: center;
-            margin-top: 20px;
-            font-weight: 700;
-            font-size: 16px;
-            color: var(--text-muted);
-        }
-    </style>
-</head>
-<body>
-
-<div class="container" id="talaCard">
-    
-    <div class="top-banner">
-        <div class="logo-header-box">
-            <img src="תל”א.jpg" alt="לוגו תל''א" class="header-logo-img">
-            <h1 class="main-title">
-                <span class="tala-letter">ת</span>כנית <span class="tala-letter">ל</span>ימודים <span class="tala-letter">א</span>ישית
-            </h1>
-        </div>
-        
-        <div class="personal-details-box">
-            <div class="details-grid" id="detailsGrid">
-                <div>
-                    <label>שם מלא:</label>
-                    <input type="text" id="fullName" placeholder="שם פרטי ומשפחה">
-                </div>
-                <div>
-                    <label>כיתה:</label>
-                    <input type="text" id="grade" placeholder="למשל: י&quot;ב">
-                </div>
-                <div>
-                    <label>תאריך:</label>
-                    <input type="text" id="date" placeholder="DD/MM/YYYY">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <form id="talaForm">
-        <div class="flight-grid" id="flightGrid">
-            
-            <div class="flight-column">
-                <div class="col-header">
-                    <span class="visual-icon">🛣</span>
-                    המסע שלי
-                </div>
-
-                <div class="form-group">
-                    <label><span class="visual-icon">💭</span> החלומות שלי:</label>
-                    <textarea id="dreams" placeholder="מה ה
+        .btn-submit { background: #10
