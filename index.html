@@ -37,6 +37,7 @@
             padding: 25px;
             border: 3px solid #7dd3fc;
             position: relative;
+            text-align: right;
         }
 
         .top-banner {
@@ -84,6 +85,7 @@
             color: #0369a1;
             display: block;
             margin-bottom: 6px;
+            text-align: right;
         }
 
         .details-grid input {
@@ -93,6 +95,8 @@
             font-size: 15px;
             width: 100%;
             font-family: inherit;
+            text-align: right;
+            direction: rtl;
         }
 
         .flight-grid {
@@ -116,6 +120,7 @@
             gap: 18px;
             box-shadow: 0 6px 15px rgba(0,0,0,0.03);
             position: relative;
+            text-align: right;
         }
 
         .col-header {
@@ -135,6 +140,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            text-align: right;
         }
 
         label {
@@ -144,6 +150,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            justify-content: flex-start;
+            text-align: right;
         }
 
         .visual-icon {
@@ -162,6 +170,8 @@
             min-height: 110px;
             background: #f8fafc;
             line-height: 1.5;
+            text-align: right;
+            direction: rtl;
         }
 
         textarea:focus {
@@ -287,7 +297,7 @@
                 </div>
                 <div>
                     <label>תאריך:</label>
-                    <input type="date" id="date">
+                    <input type="text" id="date" placeholder="DD/MM/YYYY">
                 </div>
             </div>
         </div>
@@ -394,7 +404,19 @@
 <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyPsVFHyRzHgLtlnTy7WbN31m8P2mgbA3_-Z3WjkQs34_ShKuhJOMZQzwB8U9yPFBj8g/exec";
 
-    document.getElementById('date').valueAsDate = new Date();
+    // פורמט תאריך ישראלי מקובל (DD/MM/YYYY)
+    function setFormattedTodayDate() {
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        return `${dd}/${mm}/${yyyy}`;
+    }
+
+    const dateField = document.getElementById('date');
+    if (!localStorage.getItem('tala_date')) {
+        dateField.value = setFormattedTodayDate();
+    }
 
     const fields = ['fullName', 'grade', 'date', 'dreams', 'strengths', 'challenges', 'academicGoals', 'socialGoals', 'personalGoals', 'howToAchieve'];
     
@@ -461,7 +483,6 @@
         });
     }
 
-    // פונקציית יצירת תמונת A4 מעוצבת ברוחב מלא (ללא קטיעה)
     function downloadAsA4Image() {
         const status = document.getElementById('statusMsg');
         status.style.color = '#0284c7';
@@ -473,11 +494,9 @@
         const flightGrid = document.getElementById('flightGrid');
         const detailsGrid = document.getElementById('detailsGrid');
 
-        // הסתרת הכפתורים באופן זמני
         speechBtns.forEach(btn => btn.style.display = 'none');
         actionsBox.style.display = 'none';
 
-        // כפיית רווח מעוצב של 3 עמודות רחבות לפורמט A4 בולט
         const originalWidth = card.style.width;
         card.style.width = '1000px';
         flightGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
@@ -489,7 +508,6 @@
             windowWidth: 1200,
             backgroundColor: '#ffffff'
         }).then(canvas => {
-            // החזרת העיצוב למסך הנייד
             card.style.width = originalWidth;
             flightGrid.style.gridTemplateColumns = '';
             detailsGrid.style.gridTemplateColumns = '';
@@ -503,7 +521,7 @@
             link.click();
 
             status.style.color = '#10b981';
-            status.innerText = '🖼️ התמונה המעוצבת נשמרו בגלריית המכשיר! כעת נכנסים ל-WhatsApp ושולחים אותה למורה.';
+            status.innerText = '🖼️ התמונה המעוצבת נשמרה בגלריית המכשיר! כעת נכנסים ל-WhatsApp ושולחים אותה למורה.';
         }).catch(err => {
             card.style.width = originalWidth;
             flightGrid.style.gridTemplateColumns = '';
@@ -522,7 +540,7 @@
                 el.value = '';
                 localStorage.removeItem('tala_' + id);
             });
-            document.getElementById('date').valueAsDate = new Date();
+            document.getElementById('date').value = setFormattedTodayDate();
             lockActions();
             const status = document.getElementById('statusMsg');
             status.style.color = '#f59e0b';
