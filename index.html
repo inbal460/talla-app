@@ -419,7 +419,7 @@
 <div id="statusMsg">⚠️ יש ללחוץ על "שמור ושגר לגיליון" לפני שניתן להוריד את התמונה או לשתף קישור.</div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyCuWZ3Ix5QwhlZXyMstXLLZR4-bOWDP8XN8TMd0nPf-nFX22Vtf7yvVgHDLpAWl2nBsA/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxh3yXqEqwoBD-fiNt8QQOpRkGMLRsVM78-EqmjWc4v8RZLCF1aFfRoAdUskRqRO2w9iw/exec";
 
     let currentRecordId = null;
 
@@ -466,7 +466,7 @@
         fetch(`${GOOGLE_SCRIPT_URL}?id=${encodeURIComponent(id)}`)
             .then(res => res.json())
             .then(data => {
-                if (data && data.fullName) {
+                if (data && data.status === "success") {
                     fields.forEach(f => {
                         if (data[f] !== undefined) {
                             document.getElementById(f).value = data[f];
@@ -478,12 +478,12 @@
                     document.getElementById('btnShareLink').style.display = 'flex';
                 } else {
                     status.style.color = '#ef4444';
-                    status.innerText = '❌ הטופס המבוקש לא נמצא.';
+                    status.innerText = '❌ הטופס המבוקש לא נמצא בגיליון.';
                 }
             })
             .catch(err => {
                 status.style.color = '#ef4444';
-                status.innerText = 'שגיאה שטעינת הנתונים: ' + err.message;
+                status.innerText = 'שגיאה בטעינת הנתונים: ' + err.message;
             });
     }
 
@@ -491,7 +491,7 @@
         document.getElementById('btnImage').disabled = true;
         const status = document.getElementById('statusMsg');
         status.style.color = '#d97706';
-        status.innerText = '⚠️ בוצעו שינויים - יש ללחוץ על "1. שמור ושגר לגיליון" עדכון הנתונים.';
+        status.innerText = '⚠️ בוצעו שינויים - יש ללחוץ על "1. שמור ושגר לגיליון" לעדכון הנתונים.';
     }
 
     function unlockActions() {
@@ -530,12 +530,15 @@
         })
         .then(res => res.json())
         .then(res => {
-            if (res.recordId) {
+            if (res && res.recordId) {
                 currentRecordId = res.recordId;
                 status.style.color = '#10b981';
                 status.innerText = '🎉 הנתונים נשמרו בגיליון! ניתן להוריד תמונה או לשלוח קישור לעריכה למורה.';
                 unlockActions();
                 document.getElementById('btnShareLink').style.display = 'flex';
+            } else {
+                status.style.color = '#ef4444';
+                status.innerText = 'שגיאה בשמירת הנתונים בגיליון.';
             }
         })
         .catch(err => {
