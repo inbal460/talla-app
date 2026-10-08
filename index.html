@@ -99,7 +99,6 @@
             direction: rtl;
         }
 
-        /* עיצוב ייעודי לשדה התאריך */
         #date {
             direction: ltr !important;
             text-align: center !important;
@@ -267,6 +266,9 @@
         .btn-image { background: #0284c7; color: white; }
         .btn-image:hover { background: #0369a1; }
 
+        .btn-whatsapp { background: #25D366; color: white; }
+        .btn-whatsapp:hover { background: #1eb956; }
+
         .btn-reset { background: #f59e0b; color: white; }
         .btn-reset:hover { background: #d97706; }
 
@@ -404,6 +406,9 @@
             <button type="button" id="btnImage" class="btn btn-image" onclick="downloadAsA4Image()" disabled title="יש לשמור תחילה את הנתונים בגיליון">
                 <i class="fa-solid fa-image"></i> 2. הורד תמונה לגלרייה (A4)
             </button>
+            <button type="button" id="btnShareLink" class="btn btn-whatsapp" onclick="shareEditLink()" style="display: none;">
+                <i class="fa-brands fa-whatsapp"></i> 3. שלח קישור לעריכה למורה
+            </button>
             <button type="button" class="btn btn-reset" onclick="resetForm()">
                 <i class="fa-solid fa-rotate-right"></i> טופס חדש
             </button>
@@ -411,12 +416,13 @@
     </form>
 </div>
 
-<div id="statusMsg">⚠️ יש ללחוץ על "שמור ושגר לגיליון" לפני שניתן להוריד את התמונה.</div>
+<div id="statusMsg">⚠️ יש ללחוץ על "שמור ושגר לגיליון" לפני שניתן להוריד את התמונה או לשתף קישור.</div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyPsVFHyRzHgLtlnTy7WbN31m8P2mgbA3_-Z3WjkQs34_ShKuhJOMZQzwB8U9yPFBj8g/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyCuWZ3Ix5QwhlZXyMstXLLZR4-bOWDP8XN8TMd0nPf-nFX22Vtf7yvVgHDLpAWl2nBsA/exec";
 
-    // יצירת תאריך במבנה DD/MM/YYYY
+    let currentRecordId = null;
+
     function getTodayIsraeliDate() {
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
@@ -425,43 +431,67 @@
         return `${dd}/${mm}/${yyyy}`;
     }
 
-    // המרת מחרוזת מפורמט YYYY-MM-DD לפורמט DD/MM/YYYY במידה ונשמר ערך ישן בדפדפן
-    function fixDateString(val) {
-        if (!val) return getTodayIsraeliDate();
-        if (val.includes('-')) {
-            const parts = val.split('-');
-            if (parts.length === 3 && parts[0].length === 4) {
-                return `${parts[2]}/${parts[1]}/${parts[0]}`;
-            }
-        }
-        return val;
-    }
-
-    const dateField = document.getElementById('date');
-    const savedDate = localStorage.getItem('tala_date');
-    dateField.value = fixDateString(savedDate);
-    localStorage.setItem('tala_date', dateField.value);
-
     const fields = ['fullName', 'grade', 'date', 'dreams', 'strengths', 'challenges', 'academicGoals', 'socialGoals', 'personalGoals', 'howToAchieve'];
-    
-    fields.forEach(id => {
-        const el = document.getElementById(id);
-        if (id !== 'date') {
-            const saved = localStorage.getItem('tala_' + id);
-            if (saved) el.value = saved;
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const recordId = urlParams.get('id');
+
+        if (recordId) {
+            currentRecordId = recordId;
+            loadExistingData(recordId);
+        } else {
+            document.getElementById('date').value = getTodayIsraeliDate();
+            fields.forEach(id => {
+                if (id !== 'date') {
+                    const saved = localStorage.getItem('tala_' + id);
+                    if (saved) document.getElementById(id).value = saved;
+                }
+            });
         }
-        
-        el.addEventListener('input', () => {
-            localStorage.setItem('tala_' + id, el.value);
-            lockActions();
+
+        fields.forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                if (!currentRecordId) localStorage.setItem('tala_' + id, document.getElementById(id).value);
+                lockActions();
+            });
         });
     });
+
+    function loadExistingData(id) {
+        const status = document.getElementById('statusMsg');
+        status.style.color = '#0284c7';
+        status.innerText = '🔄 טוען נתוני תל"א לעריכה...';
+
+        fetch(`${GOOGLE_SCRIPT_URL}?id=${encodeURIComponent(id)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.fullName) {
+                    fields.forEach(f => {
+                        if (data[f] !== undefined) {
+                            document.getElementById(f).value = data[f];
+                        }
+                    });
+                    status.style.color = '#10b981';
+                    status.innerText = `✏️ נמצאת במצב עריכה עבור: ${data.fullName}`;
+                    unlockActions();
+                    document.getElementById('btnShareLink').style.display = 'flex';
+                } else {
+                    status.style.color = '#ef4444';
+                    status.innerText = '❌ הטופס המבוקש לא נמצא.';
+                }
+            })
+            .catch(err => {
+                status.style.color = '#ef4444';
+                status.innerText = 'שגיאה שטעינת הנתונים: ' + err.message;
+            });
+    }
 
     function lockActions() {
         document.getElementById('btnImage').disabled = true;
         const status = document.getElementById('statusMsg');
         status.style.color = '#d97706';
-        status.innerText = '⚠️ בוצעו שינויים - יש ללחוץ על "1. שמור ושגר לגיליון" כדי לאפשר הורדת תמונה.';
+        status.innerText = '⚠️ בוצעו שינויים - יש ללחוץ על "1. שמור ושגר לגיליון" עדכון הנתונים.';
     }
 
     function unlockActions() {
@@ -480,6 +510,7 @@
         status.innerText = '✈️ שולח נתונים לגיליון... אנא המתן';
 
         const payload = {
+            recordId: currentRecordId,
             fullName: fullName,
             grade: document.getElementById('grade').value,
             date: document.getElementById('date').value,
@@ -494,19 +525,32 @@
 
         fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)
         })
-        .then(() => {
-            status.style.color = '#10b981';
-            status.innerText = '🎉 הנתונים נשמרו בגיליון! כעת לחץ על "2. הורד תמונה לגלרייה" כדי לשמור את התמונה ולשלוח למורה ב-WhatsApp.';
-            unlockActions();
+        .then(res => res.json())
+        .then(res => {
+            if (res.recordId) {
+                currentRecordId = res.recordId;
+                status.style.color = '#10b981';
+                status.innerText = '🎉 הנתונים נשמרו בגיליון! ניתן להוריד תמונה או לשלוח קישור לעריכה למורה.';
+                unlockActions();
+                document.getElementById('btnShareLink').style.display = 'flex';
+            }
         })
         .catch(err => {
             status.style.color = '#ef4444';
             status.innerText = 'שגיאה בשליחת הנתונים: ' + err.message;
         });
+    }
+
+    function shareEditLink() {
+        if (!currentRecordId) return;
+        const baseUrl = window.location.href.split('?')[0];
+        const editUrl = `${baseUrl}?id=${currentRecordId}`;
+        const studentName = document.getElementById('fullName').value || 'תלמיד/ה';
+        const text = encodeURIComponent(`שלום, מצורף קישור לצפייה ועריכת תל"א של ${studentName}:\n${editUrl}`);
+        window.open(`https://wa.me/?text=${text}`, '_blank');
     }
 
     function downloadAsA4Image() {
@@ -547,7 +591,7 @@
             link.click();
 
             status.style.color = '#10b981';
-            status.innerText = '🖼️ התמונה המעוצבת נשמרה בגלריית המכשיר! כעת נכנסים ל-WhatsApp ושולחים אותה למורה.';
+            status.innerText = '🖼️ התמונה המעוצבת נשמרה בגלריית המכשיר!';
         }).catch(err => {
             card.style.width = originalWidth;
             flightGrid.style.gridTemplateColumns = '';
@@ -561,13 +605,14 @@
 
     function resetForm() {
         if (confirm('האם למחוק את כל התשובות מהמסך ולהתחיל טופס חדש?')) {
+            currentRecordId = null;
             fields.forEach(id => {
                 const el = document.getElementById(id);
                 el.value = '';
                 localStorage.removeItem('tala_' + id);
             });
             document.getElementById('date').value = getTodayIsraeliDate();
-            localStorage.setItem('tala_date', getTodayIsraeliDate());
+            document.getElementById('btnShareLink').style.display = 'none';
             lockActions();
             const status = document.getElementById('statusMsg');
             status.style.color = '#f59e0b';
